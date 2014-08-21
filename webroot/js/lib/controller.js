@@ -20,6 +20,13 @@ Frontend.Controller = Class.extend({
 	parentController: null,
 	name: null,
 	action: null,
+    /**
+     * Holds the DOM element of this controller.
+     *
+     * @var DOMElement
+     */
+    _dom: null,
+    $: null,
 	/**
 	 * Class constructor
 	 *
@@ -32,8 +39,12 @@ Frontend.Controller = Class.extend({
 		this._frontendData = frontendData;
 		this.name = this._frontendData.params.controller;
 		this.action = this._frontendData.params.action;
+		
+        this._dom = $('div.controller.' + this._frontendData.params.controller + '-' + this._frontendData.params.action);
+        this.$ = this._dom.find.bind(this._dom);
+
 		this.__initComponents();
-		this._init();
+		this.startup();
 	},
 	/**
 	 * Returns the contents of a view var, otherwise null
@@ -52,7 +63,7 @@ Frontend.Controller = Class.extend({
 	 *
 	 * @return void 
 	 */
-	_init: function() {},
+	startup: function() {},
 	/**
 	 * Initializes the configured components
 	 *
@@ -86,5 +97,67 @@ Frontend.Controller = Class.extend({
 	},
 	isAjax: function() {
 		return this.getVar('isAjax') === true;
-	}
+	},
+    /**
+     * Returns Server-side state value for mobile-check
+     *
+     * @return {boolean}
+     */
+    isMobile: function() {
+        return this.getVar('isMobile');
+    },
+    /**
+     * If the current request was made via ajax, bind the submit event, make an ajax
+     * POST request and update the dialog
+     * TODO: make URL and loadJsonAction options configurable
+     * @return {void}
+     */
+    _ajaxDialogFormSetup: function($form, callback) {
+        if (!this.isAjax()) {
+            return false;
+        }
+        var url = {
+            controller: this.name,
+            action: this.action,
+            pass: this._frontendData.params.pass,
+            plugin: this._frontendData.params.plugin,
+            named: this._frontendData.params.named
+        };
+        $form.submit(function(e) {
+            e.preventDefault();
+            App.Main.UIBlocker.blockElement(this._dom);
+            App.Main.loadJsonAction(url, {
+                target: this._dom.parent(),
+                data: $form.serialize(),
+                parentController: this.parentController,
+                onComplete: function(controller, response) {
+                    App.Main.UIBlocker.unblockElement(this._dom);
+                    if (typeof callback === 'function') {
+                        callback(controller, response);
+                    }
+                }
+            });
+            return false;
+        }.bind(this));
+    },
+    /**
+     * If the current request was made via ajax, bind the submit event, make an ajax
+     * POST request and update the dialog
+     * TODO: make this more configurable
+     * @return {void}
+     */
+    openDialog: function(url, onClose) {
+        this._dialog = new App.Dialog({
+            onClose: onClose
+        });
+        this._dialog.blockUi();
+        App.Main.loadJsonAction(url, {
+            parentController: this,
+            target: this._dialog.getContent(),
+            onComplete: function() {
+                this._dialog.show();
+                this._dialog.unblockUi();
+            }.bind(this)
+        });
+    }
 });

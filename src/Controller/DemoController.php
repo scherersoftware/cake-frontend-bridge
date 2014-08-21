@@ -11,6 +11,6 @@ class DemoController extends AppController {
 	];
 	
 	public function index() {
-		
+		$this->FrontendBridge->setJson('foobar', 'foo');
 	}
 }

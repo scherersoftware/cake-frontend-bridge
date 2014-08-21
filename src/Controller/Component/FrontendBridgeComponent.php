@@ -4,7 +4,7 @@ use Cake\Controller\Component;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Controller\ComponentRegistry;
-
+use Cake\Utility\Inflector;
 
 class FrontendBridgeComponent extends Component {
 /**
@@ -35,7 +35,6 @@ class FrontendBridgeComponent extends Component {
  */
 	protected $_request;
 
-
 /**
  * Constructor
  *
@@ -56,6 +55,7 @@ class FrontendBridgeComponent extends Component {
  */
 	public function implementedEvents() {
 		return [
+			'Controller.beforeRender' => 'beforeRender'
 		];
 	}
 
@@ -116,30 +116,32 @@ class FrontendBridgeComponent extends Component {
  *
  * @return void
  */
-	public function beforeRender(Controller $controller) {
-		$this->setJson('isAjax', $controller->request->is('ajax'));
-		$this->setJson('isMobile', $controller->request->is('mobile'));
+	public function beforeRender(Event $event) {
+		$this->setJson('isAjax', $this->_controller->request->is('ajax'));
+		$this->setJson('isMobile', $this->_controller->request->is('mobile'));
 
 		$appData = array(
 			'jsonData' => $this->_jsonData,
-			'webroot' => 'http' . (env('HTTPS') ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->webroot,
-			'url' => isset($this->_controller->params['url']['url']) ? $this->_controller->params['url']['url'] : '',
+			'webroot' => 'http' . (env('HTTPS') ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
+			'url' => $this->_controller->request->url,
 			'controller' => $this->_controller->name,
-			'action' => $this->_controller->action,
+			'action' => $this->_controller->request->action,
 			'params' => array(
-				'named' => $this->_controller->params['named'],
-				'pass' => $this->_controller->params['pass'],
-				'plugin' => $this->_controller->params['plugin'],
+				'query' => $this->_controller->request->query,
+				'pass' => $this->_controller->request->params['pass'],
+				'plugin' => $this->_controller->request->plugin,
 				'controller' => Inflector::underscore($this->_controller->name),
-				'action' => $this->_controller->action
+				'action' => $this->_controller->request->action
 			),
 		);
+
 		if(!$this->_request->is('ajax')) {
-			$r = new ReflectionClass('Types');
-			$appData['Types'] = $r->getConstants();
+			// FIXME
+			#$r = new \ReflectionClass('Types');
+			#$appData['Types'] = $r->getConstants();
 		}
 		// merge in the additional frontend data
-		$appData = Set::merge($appData, $this->_additionalAppData);
+		$appData = Hash::merge($appData, $this->_additionalAppData);
 		$this->_controller->set('frontendData', $appData);
 	}
 }

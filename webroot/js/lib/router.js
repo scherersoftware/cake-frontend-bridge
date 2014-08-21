@@ -8,7 +8,7 @@ Frontend.Router = Class.extend({
 		controller: null,
 		action: null,
 		pass: [],
-		named: {},
+		query: {},
 		prefix: '',
 		plugin: null
 	},
@@ -35,18 +35,17 @@ Frontend.Router = Class.extend({
 	 * @param string	controller 	The controller name in lower case
 	 * @param string	action 		The controller action
 	 * @param Array		pass		An array containing the pass params (/arg1/arg2/)
-	 * @param Object 	named		An object containing the named params, indexed by param name
+	 * @param Object 	query		An object containing the named params, indexed by param name
 	 * @return string				The generated URL
 	 */
-	url: function(controller, action, pass, named, get) {
+	url: function(controller, action, pass, query) {
 		if(typeof controller == 'object') {
 			var params = jQuery.extend({}, this.urlDefaults, controller);
 			var controller = params.controller;
 			var action = params.action;
 			var pass = params.pass;
-			var named = params.named;
 			var prefix = params.prefix;
-			var get = params.get;
+			var query = params.query;
 			var plugin = params.plugin;
 		}
 		
@@ -63,14 +62,9 @@ Frontend.Router = Class.extend({
 				url += pass[ i ] + '/';
 			}
 		}
-		if(typeof named == 'object') {
-			for(var key in named) {
-				url += key + ':' + named[ key ] + '/';
-			}
-		}
 		
 		if(typeof get == 'object') {
-			url += '?' + http_build_query(get);
+			url += '?' + http_build_query(query);
 		}
 		return url;
 	},
