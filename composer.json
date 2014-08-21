@@ -1,0 +1,20 @@
+{
+	"name": "codekanzlei/cake-frontend-bridge",
+	"description": "Frontend Bridge CakePHP 3",
+	"license": "MIT",
+	"type": "cakephp-plugin",
+	"extra": {
+    	"installer-name": "FrontendBridge"
+	},
+	"require": {
+		"composer/installers": "*"
+	},
+	"require-dev": {
+		"cakephp/cakephp": "3.0.x-dev"
+	},
+	"autoload": {
+		"psr-4": {
+		"FrontendBridge\\": "src"
+		}
+	}
+}
