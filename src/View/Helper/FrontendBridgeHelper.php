@@ -22,7 +22,7 @@ class FrontendBridgeHelper extends Helper {
 	public $_dependencies = array(
 		'/frontend_bridge/js/lib/basics.js',
 		'/frontend_bridge/js/lib/jinheritance.js',
-		'/frontend_bridge/js/lib/jquery.min.js',
+		#'/frontend_bridge/js/lib/jquery.min.js',
 		'/frontend_bridge/js/lib/publish_subscribe_broker.js',
 		'/frontend_bridge/js/lib/app.js',
 		'/frontend_bridge/js/lib/controller.js',
