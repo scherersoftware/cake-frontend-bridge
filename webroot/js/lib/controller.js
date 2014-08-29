@@ -44,7 +44,7 @@ Frontend.Controller = Class.extend({
         this.$ = this._dom.find.bind(this._dom);
 
 		this.__initComponents();
-		this.startup();
+		this._initialize();
 	},
 	/**
 	 * Returns the contents of a view var, otherwise null
@@ -57,6 +57,14 @@ Frontend.Controller = Class.extend({
 			return this._frontendData.jsonData[ key ];
 		}
 		return null;
+	},
+	/**
+	 * Startup callback - can be implemented by sub controllers
+	 *
+	 * @return void 
+	 */
+	_initialize: function() {
+		this.startup();
 	},
 	/**
 	 * Startup callback - can be implemented by sub controllers
