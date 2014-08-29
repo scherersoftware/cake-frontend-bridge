@@ -177,7 +177,7 @@ class FrontendBridgeHelper extends Helper {
 		// In the case of a plugin, we need to check the subfolder.
 		// @TODO: what if we are in a plugin, but want to include a main app js file?
 		if(empty($this->plugin)) {
-			$absolutePath = JS;
+			$absolutePath = WWW_ROOT . 'js/';
 			$pluginPrefix = '';
 		} else {
 			$absolutePath = Plugin::path($this->plugin) . 'webroot/js/';
