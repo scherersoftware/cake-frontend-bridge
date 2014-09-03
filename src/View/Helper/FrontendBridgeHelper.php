@@ -124,10 +124,10 @@ class FrontendBridgeHelper extends Helper {
 		// app/controllers/posts/*_controller.js
 		$folder = new \Cake\Utility\Folder(WWW_ROOT . 'js/app/controllers');
 		foreach($folder->findRecursive('.*\.js') as $file) {
-			$jsFile = str_replace(WWW_ROOT . 'js', '', $file);
+			$jsFile = '/' . str_replace(WWW_ROOT, '', $file);
 			$this->_addDependency($jsFile);
 		}
-		
+
 		// Add All Plugin Controllers
 		foreach(Plugin::loaded() as $pluginName) {
 			$pluginJsControllersFolder = Plugin::path($pluginName) . '/webroot/js/app/controllers/';
