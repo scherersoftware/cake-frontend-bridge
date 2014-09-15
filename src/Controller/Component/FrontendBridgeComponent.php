@@ -1,19 +1,21 @@
 <?php
 namespace FrontendBridge\Controller\Component;
+
 use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
-use Cake\Controller\ComponentRegistry;
 use Cake\Utility\Inflector;
 
 class FrontendBridgeComponent extends Component {
+
 /**
  * Holds a reference to the controller which uses this component
  *
  * @var Controller
  */
 	protected $_controller;
-	
+
 /**
  * Holds the data which will be made available to the frontend controller
  *
@@ -62,13 +64,13 @@ class FrontendBridgeComponent extends Component {
 /**
  * Pass data to the frontend controller
  *
- * @param string $key 
- * @param mixed $value 
+ * @param string $key string key or array of key=>values
+ * @param mixed $value value
  * @return void
  */
 	public function setJson($key, $value = null) {
-		if(is_array($key)) {
-			foreach($key as $k => $v) {
+		if (is_array($key)) {
+			foreach ($key as $k => $v) {
 				$this->setJson($k, $v);
 			}
 			return;
@@ -76,12 +78,12 @@ class FrontendBridgeComponent extends Component {
 
 		$this->_jsonData[$key] = $value;
 	}
-	
+
 /**
  * Pass data to the frontend controller
  *
- * @param string $key 
- * @param mixed $value 
+ * @param string $key string key or array of key=>values
+ * @param mixed $value value
  * @return void
  */
 	public function set($key, $value = null) {
@@ -91,19 +93,19 @@ class FrontendBridgeComponent extends Component {
 /**
  * Adds additional data to the appData 
  *
- * @param string $key 
- * @param mixed $value 
- * @author Robert Scherer
+ * @param string $key string key
+ * @param mixed $value value
+ * @return void
  */
 	public function addAppData($key, $value = null) {
-		$this->_additionalAppData[ $key ] = $value;
+		$this->_additionalAppData[$key] = $value;
 	}
 
 /**
  * Set a variable to both the frontend controller and the backend view
  *
- * @param string $key 
- * @param mixed $value 
+ * @param string $key string key or array of key=>value
+ * @param mixed $value var value
  * @return void
  */
 	public function setBoth($key, $value = null) {
@@ -114,6 +116,7 @@ class FrontendBridgeComponent extends Component {
 /**
  * Should be called explicitely in Controller::beforeRender()
  *
+ * @param Event $event beforeRender event
  * @return void
  */
 	public function beforeRender(Event $event) {
@@ -135,7 +138,7 @@ class FrontendBridgeComponent extends Component {
 			),
 		);
 
-		if(!$this->_request->is('ajax')) {
+		if (!$this->_request->is('ajax')) {
 			// FIXME
 			#$r = new \ReflectionClass('Types');
 			#$appData['Types'] = $r->getConstants();

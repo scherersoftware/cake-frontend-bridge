@@ -1,14 +1,15 @@
 <?php
-namespace FrontendBridge\View\Helper; 
-use Cake\View\Helper;
-use Cake\Utility\Hash;
-use Cake\Core\Plugin;
-use Cake\Utility\Inflector;
+namespace FrontendBridge\View\Helper;
+
 use Cake\Core\App;
 use Cake\Core\Configure;
-
+use Cake\Core\Plugin;
+use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
+use Cake\View\Helper;
 
 class FrontendBridgeHelper extends Helper {
+
 /**
  * The helpers we need
  */
@@ -19,7 +20,7 @@ class FrontendBridgeHelper extends Helper {
  *
  * @var array
  */
-	public $_dependencies = array(
+	protected $_dependencies = array(
 		'/frontend_bridge/js/lib/basics.js',
 		'/frontend_bridge/js/lib/jinheritance.js',
 		#'/frontend_bridge/js/lib/jquery.min.js',
@@ -42,7 +43,7 @@ class FrontendBridgeHelper extends Helper {
 /**
  * Initialize the helper. Needs to be called before running it.
  *
- * @param array $frontendData 
+ * @param array $frontendData Data to be passed to the frontend
  * @return void
  */
 	public function init($frontendData) {
@@ -58,7 +59,7 @@ class FrontendBridgeHelper extends Helper {
  * reference.
  *
  * @return string
- */	
+ */
 	public function getMainContentClasses() {
 		$classes = ['controller'];
 		$classes[] = Inflector::underscore($this->_View->name . '-' . $this->_View->action);
@@ -68,7 +69,7 @@ class FrontendBridgeHelper extends Helper {
 /**
  * Returns a full list of the dependencies (used in console build task)
  *
- * @param array $defaultControllers 
+ * @param array $defaultControllers which JS controllers to include before all others
  * @return array
  */
 	public function compileDependencies($defaultControllers = array()) {
@@ -91,15 +92,15 @@ class FrontendBridgeHelper extends Helper {
 		$this->_dependencies = array_unique($this->_dependencies);
 		$this->_addCurrentController();
 
-		foreach($this->_dependencies as $dependency) {
-			if(strpos($dependency, DS) !== false) {
+		foreach ($this->_dependencies as $dependency) {
+			if (strpos($dependency, DS) !== false) {
 				$dependency = str_replace(DS, '/', $dependency);
 			}
 			$jsFile = $this->Html->script($dependency);
-			$out.= $jsFile . "\n";
+			$out .= $jsFile . "\n";
 		}
-		$out.= $this->getAppDataJs($this->_frontendData);
-		$out.= $this->Html->script('/frontend_bridge/js/bootstrap.js');
+		$out .= $this->getAppDataJs($this->_frontendData);
+		$out .= $this->Html->script('/frontend_bridge/js/bootstrap.js');
 		return $out;
 	}
 
@@ -123,26 +124,26 @@ class FrontendBridgeHelper extends Helper {
 	public function addAllControllers() {
 		// app/controllers/posts/*_controller.js
 		$folder = new \Cake\Utility\Folder(WWW_ROOT . 'js/app/controllers');
-		foreach($folder->findRecursive('.*\.js') as $file) {
+		foreach ($folder->findRecursive('.*\.js') as $file) {
 			$jsFile = '/' . str_replace(WWW_ROOT, '', $file);
 			$this->_addDependency($jsFile);
 		}
 
 		// Add All Plugin Controllers
-		foreach(Plugin::loaded() as $pluginName) {
+		foreach (Plugin::loaded() as $pluginName) {
 			$pluginJsControllersFolder = Plugin::path($pluginName) . '/webroot/js/app/controllers/';
 			$pluginJsControllersFolder = str_replace('\\', '/', $pluginJsControllersFolder);
 
-			if(is_dir($pluginJsControllersFolder)) {
+			if (is_dir($pluginJsControllersFolder)) {
 				$folder = new \Cake\Utility\Folder($pluginJsControllersFolder);
 				$files = $folder->findRecursive('.*\.js');
-				foreach($files as $file) {
+				foreach ($files as $file) {
 					$file = str_replace('\\', '/', $file);
 					$file = str_replace($pluginJsControllersFolder, '', $file);
 					$this->_dependencies[] = '/' . Inflector::underscore($pluginName) . '/js/app/controllers/' . $file;
 				}
 			}
-		}		
+		}
 	}
 
 /**
@@ -153,15 +154,15 @@ class FrontendBridgeHelper extends Helper {
  * - app/controllers/posts_controller.js
  * - app/controllers/posts/controller.js
  *
- * @param string|array $controllerName	Dot-separated controller, TitleCased name.
+ * @param string|array $controllerName Dot-separated controller, TitleCased name.
  * 										Posts.EditPermissions
  * 										Posts.* (include all)
  * 										
  * @return bool
  */
 	public function addController($controllerName) {
-		if(is_array($controllerName)) {
-			foreach($controllerName as $cn) {
+		if (is_array($controllerName)) {
+			foreach ($controllerName as $cn) {
 				$this->addController($cn);
 			}
 			return true;
@@ -170,13 +171,13 @@ class FrontendBridgeHelper extends Helper {
 		$split = explode('.', $controllerName);
 		$controller = $split[0];
 		$action = null;
-		if(isset($split[1])) {
+		if (isset($split[1])) {
 			$action = $split[1];
 		}
 
 		// In the case of a plugin, we need to check the subfolder.
-		// @TODO: what if we are in a plugin, but want to include a main app js file?
-		if(empty($this->plugin)) {
+
+		if (empty($this->plugin)) {
 			$absolutePath = WWW_ROOT . 'js/';
 			$pluginPrefix = '';
 		} else {
@@ -187,7 +188,7 @@ class FrontendBridgeHelper extends Helper {
 		$paths = array();
 		$path = 'app/controllers/';
 
-		if($controller && $action == '*') {
+		if ($controller && $action == '*') {
 			// add the base controller
 			$this->addController($controller);
 
@@ -196,8 +197,8 @@ class FrontendBridgeHelper extends Helper {
 			$folder = new Folder($absolutePath . $subdirPath);
 			$files = $folder->find('.*\.js');
 
-			if(!empty($files)) {
-				foreach($files as $file) {
+			if (!empty($files)) {
+				foreach ($files as $file) {
 					$this->_addDependency($pluginPrefix . $subdirPath . $file);
 				}
 			}
@@ -205,14 +206,13 @@ class FrontendBridgeHelper extends Helper {
 			$folder = new Folder($absolutePath . $path);
 			// app/controllers/posts_*.js
 			$files = $folder->find(Inflector::underscore($controller) . '_.*_controller\.js');
-			if(!empty($files)) {
-				foreach($files as $file) {
+			if (!empty($files)) {
+				foreach ($files as $file) {
 					$this->_addDependency($pluginPrefix . $path . $file);
 				}
 			}
 			return true;
-		}
-		else if($controller && $action) {
+		} elseif ($controller && $action) {
 			// app/controllers/posts/edit_controller.js
 			$paths[] = $path . Inflector::underscore($controller) . '/' . Inflector::underscore($action) . '_controller';
 			// app/controllers/posts_edit_controller.js
@@ -224,8 +224,8 @@ class FrontendBridgeHelper extends Helper {
 			$paths[] = $path . Inflector::underscore($controller) . '_controller';
 		}
 
-		foreach($paths as $filePath) {
-			if(file_exists($absolutePath . $filePath . '.js')) {
+		foreach ($paths as $filePath) {
+			if (file_exists($absolutePath . $filePath . '.js')) {
 				$this->_addDependency($pluginPrefix . $filePath . '.js');
 				return true;
 			}
@@ -240,15 +240,15 @@ class FrontendBridgeHelper extends Helper {
  * @return bool
  */
 	public function addComponent($componentName) {
-		if(is_array($componentName)) {
-			foreach($componentName as $cn) {
+		if (is_array($componentName)) {
+			foreach ($componentName as $cn) {
 				$this->addComponent($cn);
 			}
 			return true;
 		}
 		$componentFile = 'app/components/' . Inflector::underscore($componentName) . '.js';
 
-		if(file_exists(JS . DS . $componentFile)) {
+		if (file_exists(JS . DS . $componentFile)) {
 			$this->_addDependency($componentFile);
 			return true;
 		}
@@ -258,8 +258,7 @@ class FrontendBridgeHelper extends Helper {
 /**
  * Constructs the JS for setting the appData
  *
- * @param array $frontendData 
- * @return string	The rendered JS
+ * @return string The rendered JS
  */
 	public function getAppDataJs() {
 		return $this->Html->scriptBlock('
@@ -270,12 +269,12 @@ class FrontendBridgeHelper extends Helper {
 /**
  * Add a file to the frontend dependencies
  *
- * @param string $file 
+ * @param string $file path to be added
  * @return void
  */
 	protected function _addDependency($file) {
 		$file = str_replace('\\', '/', $file);
-		if(!in_array($file, $this->_dependencies)) {
+		if (!in_array($file, $this->_dependencies)) {
 			$this->_dependencies[] = $file;
 		}
 	}
@@ -287,14 +286,14 @@ class FrontendBridgeHelper extends Helper {
  */
 	protected function _includeAppController() {
 		$controller = null;
-		if(file_exists(WWW_ROOT . 'js/app/app_controller.js')) {
+		if (file_exists(WWW_ROOT . 'js/app/app_controller.js')) {
 			$controller = 'app/app_controller.js';
 		} else {
 			$controller = '/frontend_bridge/js/lib/app_controller.js';
 		}
 		$this->_dependencies[] = $controller;
 	}
-	
+
 /**
  * Includes the needed components
  *
@@ -305,19 +304,19 @@ class FrontendBridgeHelper extends Helper {
 		$appComponentFolder = WWW_ROOT . 'js/app/components/';
 		$folder = new \Cake\Utility\Folder($appComponentFolder);
 		$files = $folder->find('.*\.js');
-		if(!empty($files)) {
-			foreach($files as $file) {
+		if (!empty($files)) {
+			foreach ($files as $file) {
 				$this->_dependencies[] = 'app/components/' . $file;
 			}
 		}
-		
+
 		// Add Plugin Components
-		foreach(Plugin::loaded() as $pluginName) {
+		foreach (Plugin::loaded() as $pluginName) {
 			$pluginJsComponentsFolder = APP . 'Plugin/' . $pluginName . '/webroot/js/app/components/';
-			if(is_dir($pluginJsComponentsFolder)) {
+			if (is_dir($pluginJsComponentsFolder)) {
 				$folder = new Folder($pluginJsComponentsFolder);
 				$files = $folder->find('.*\.js');
-				foreach($files as $file) {
+				foreach ($files as $file) {
 					$this->_dependencies[] = '/' . Inflector::underscore($pluginName) . '/js/app/components/' . $file;
 				}
 			}

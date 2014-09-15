@@ -5,6 +5,7 @@
  * @package default
  */
 class ServiceResponse extends CakeResponse {
+
 /**
  * Constructor
  *
@@ -12,7 +13,7 @@ class ServiceResponse extends CakeResponse {
  * @param array $data 	data to return
  */
 	public function __construct($code, array $data = array()) {
-		if(is_array($code)) {
+		if (is_array($code)) {
 			$body = Set::merge(array(
 				'code' => Types::CODE_SUCCESS,
 				'data' => array()
