@@ -129,6 +129,7 @@ class FrontendBridgeComponent extends Component {
 			'url' => $this->_controller->request->url,
 			'controller' => $this->_controller->name,
 			'action' => $this->_controller->request->action,
+			'plugin' => $this->_controller->request->plugin,
 			'params' => array(
 				'query' => $this->_controller->request->query,
 				'pass' => $this->_controller->request->params['pass'],

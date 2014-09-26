@@ -1,13 +1,4 @@
 /**
- * Create our Frontend and App namespaces
- */
-var Frontend = {};
-var App = {
-	Controllers: {},
-	Components: {}
-};
-
-/**
  * If we dont have bind() in this browser, implement it.
  *
  */

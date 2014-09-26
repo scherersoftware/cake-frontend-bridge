@@ -41,6 +41,13 @@ class FrontendBridgeHelper extends Helper {
 	);
 
 /**
+ * Array of plugin names of the plugin js controllers which are loaded.
+ *
+ * @var array
+ */
+	protected $_pluginJsNamespaces = [];
+
+/**
  * Initialize the helper. Needs to be called before running it.
  *
  * @param array $frontendData Data to be passed to the frontend
@@ -90,6 +97,8 @@ class FrontendBridgeHelper extends Helper {
 	public function run() {
 		$out = '';
 		$this->_dependencies = array_unique($this->_dependencies);
+
+		$out .= $this->getNamespaceDefinitions();
 		$this->_addCurrentController();
 
 		foreach ($this->_dependencies as $dependency) {
@@ -102,6 +111,21 @@ class FrontendBridgeHelper extends Helper {
 		$out .= $this->getAppDataJs($this->_frontendData);
 		$out .= $this->Html->script('/frontend_bridge/js/bootstrap.js');
 		return $out;
+	}
+
+/**
+ * Returns a script block containing namespace definitions for plugin controllers.
+ *
+ * @return string
+ */
+	public function getNamespaceDefinitions() {
+		$script = 'var Frontend = {};';
+		$script .= 'var App = { Controllers: {}, Components: {} };';
+		$tpl = 'App.Controllers.%s = {};';
+		foreach ($this->_pluginJsNamespaces as $pluginName) {
+			$script .= sprintf($tpl, $pluginName);
+		}
+		return $this->Html->scriptBlock($script);
 	}
 
 /**
@@ -135,6 +159,7 @@ class FrontendBridgeHelper extends Helper {
 			$pluginJsControllersFolder = str_replace('\\', '/', $pluginJsControllersFolder);
 
 			if (is_dir($pluginJsControllersFolder)) {
+				$this->_pluginJsNamespaces[] = $pluginName;
 				$folder = new \Cake\Utility\Folder($pluginJsControllersFolder);
 				$files = $folder->findRecursive('.*\.js');
 				foreach ($files as $file) {
