@@ -38,11 +38,11 @@ Frontend.App = Class.extend({
 	 * @returns void
 	 */
 	_loadController: function(frontendData, parentController) {
-		var actionControllerName = camelCase(frontendData.controller) + camelCase(frontendData.action) + 'Controller';
+		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
 
-		if(frontendData.plugin && window['App']['Controllers'][ frontendData.plugin ] && window['App']['Controllers'][ frontendData.plugin ][ actionControllerName ]) {
-			this._controllers[actionControllerName] = new window['App']['Controllers'][ frontendData.plugin ][ actionControllerName ](frontendData, parentController);
+		if(frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
+			this._controllers[actionControllerName] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController);
 			controller = this._controllers[actionControllerName];
 		}
 		else if(window['App']['Controllers'][ actionControllerName ]) {

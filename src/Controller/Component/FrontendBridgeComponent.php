@@ -127,10 +127,10 @@ class FrontendBridgeComponent extends Component {
 			'jsonData' => $this->_jsonData,
 			'webroot' => 'http' . (env('HTTPS') ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
 			'url' => $this->_controller->request->url,
-			'controller' => $this->_controller->name,
-			'action' => $this->_controller->request->action,
-			'plugin' => $this->_controller->request->plugin,
-			'params' => array(
+			// 'controller' => $this->_controller->name,
+			// 'action' => $this->_controller->request->action,
+			// 'plugin' => $this->_controller->request->plugin,
+			'request' => array(
 				'query' => $this->_controller->request->query,
 				'pass' => $this->_controller->request->params['pass'],
 				'plugin' => $this->_controller->request->plugin,

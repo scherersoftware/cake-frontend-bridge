@@ -134,8 +134,8 @@ class FrontendBridgeHelper extends Helper {
  * @return void
  */
 	protected function _addCurrentController() {
-		$this->addController(Inflector::camelize($this->_frontendData['controller']) . '.' . Inflector::camelize($this->_frontendData['action']));
-		$this->addController(Inflector::camelize($this->_frontendData['controller']));
+		$this->addController(Inflector::camelize($this->_frontendData['request']['controller']) . '.' . Inflector::camelize($this->_frontendData['request']['action']));
+		$this->addController(Inflector::camelize($this->_frontendData['request']['controller']));
 	}
 
 /**
