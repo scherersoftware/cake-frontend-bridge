@@ -1,10 +1,14 @@
 <?php
+namespace FrontendBridge\Lib;
+
+use Cake\Network\Response;
+
 /**
  * Custom CakeResponse for Service calls
  *
  * @package default
  */
-class ServiceResponse extends CakeResponse {
+class ServiceResponse extends Response {
 
 /**
  * Constructor
