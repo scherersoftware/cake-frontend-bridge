@@ -147,7 +147,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	public function addAllControllers() {
 		// app/controllers/posts/*_controller.js
-		$folder = new \Cake\Utility\Folder(WWW_ROOT . 'js/app/controllers');
+		$folder = new \Cake\Filesystem\Folder(WWW_ROOT . 'js/app/controllers');
 		foreach ($folder->findRecursive('.*\.js') as $file) {
 			$jsFile = '/' . str_replace(WWW_ROOT, '', $file);
 			$this->_addDependency($jsFile);
@@ -160,7 +160,7 @@ class FrontendBridgeHelper extends Helper {
 
 			if (is_dir($pluginJsControllersFolder)) {
 				$this->_pluginJsNamespaces[] = $pluginName;
-				$folder = new \Cake\Utility\Folder($pluginJsControllersFolder);
+				$folder = new \Cake\Filesystem\Folder($pluginJsControllersFolder);
 				$files = $folder->findRecursive('.*\.js');
 				foreach ($files as $file) {
 					$file = str_replace('\\', '/', $file);
@@ -327,7 +327,7 @@ class FrontendBridgeHelper extends Helper {
 	protected function _includeComponents() {
 		// for now, we just include all components
 		$appComponentFolder = WWW_ROOT . 'js/app/components/';
-		$folder = new \Cake\Utility\Folder($appComponentFolder);
+		$folder = new \Cake\Filesystem\Folder($appComponentFolder);
 		$files = $folder->find('.*\.js');
 		if (!empty($files)) {
 			foreach ($files as $file) {
