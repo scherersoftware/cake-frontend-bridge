@@ -89,7 +89,7 @@ Frontend.App = Class.extend({
 		}
 		this.request(url, options.data, function(response) {
 			switch(response.code) {
-				case App.Types.CODE_SUCCESS:
+				case 'success':
 					this._onJsonActionLoaded(response, options);
 					break;
 				default:

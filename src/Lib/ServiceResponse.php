@@ -18,8 +18,8 @@ class ServiceResponse extends Response {
  */
 	public function __construct($code, array $data = array()) {
 		if (is_array($code)) {
-			$body = Set::merge(array(
-				'code' => Types::CODE_SUCCESS,
+			$body = \Cake\Utility\Hash::merge(array(
+				'code' => 'success',
 				'data' => array()
 			), $code);
 		} else {
