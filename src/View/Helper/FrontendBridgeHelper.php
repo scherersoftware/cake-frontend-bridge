@@ -69,7 +69,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	public function getMainContentClasses() {
 		$classes = ['controller'];
-		$classes[] = Inflector::underscore($this->_View->name . '-' . $this->_View->action);
+		$classes[] = Inflector::underscore($this->_View->request->controller . '-' . $this->_View->request->action);
 		return implode(' ', $classes);
 	}
 
