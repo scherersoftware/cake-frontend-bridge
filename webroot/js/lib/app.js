@@ -20,6 +20,7 @@ Frontend.App = Class.extend({
 		this.appData = appData;
 		this._pubSubBroker = new Frontend.PublishSubscribeBroker();
 		this.Router = new Frontend.Router(appData);
+		this.UIBlocker = new Frontend.UIBlocker();
 	},
 	
 	/**
