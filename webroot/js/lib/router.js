@@ -63,7 +63,7 @@ Frontend.Router = Class.extend({
 			}
 		}
 		
-		if(typeof get == 'object') {
+		if(typeof query == 'object') {
 			url += '?' + http_build_query(query);
 		}
 		return url;
