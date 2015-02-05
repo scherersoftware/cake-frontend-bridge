@@ -3,6 +3,7 @@ namespace FrontendBridge\Controller\Component;
 
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -122,6 +123,7 @@ class FrontendBridgeComponent extends Component {
 	public function beforeRender(Event $event) {
 		$this->setJson('isAjax', $this->_controller->request->is('ajax'));
 		$this->setJson('isMobile', $this->_controller->request->is('mobile'));
+		$this->setJson('debug', Configure::read('debug'));
 
 		$appData = array(
 			'jsonData' => $this->_jsonData,
@@ -139,11 +141,6 @@ class FrontendBridgeComponent extends Component {
 			),
 		);
 
-		if (!$this->_request->is('ajax')) {
-			// FIXME
-			#$r = new \ReflectionClass('Types');
-			#$appData['Types'] = $r->getConstants();
-		}
 		// merge in the additional frontend data
 		$appData = Hash::merge($appData, $this->_additionalAppData);
 		$this->_controller->set('frontendData', $appData);
