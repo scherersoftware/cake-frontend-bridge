@@ -4,6 +4,7 @@ namespace FrontendBridge\View\Helper;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Filesystem\Folder;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
@@ -22,8 +23,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	protected $_dependencies = array(
 		'/frontend_bridge/js/lib/basics.js',
-		'/frontend_bridge/js/lib/jinheritance.js',
-		#'/frontend_bridge/js/lib/jquery.min.js',
+		'/frontend_bridge/js/lib/class.js',
 		'/frontend_bridge/js/lib/publish_subscribe_broker.js',
 		'/frontend_bridge/js/lib/app.js',
 		'/frontend_bridge/js/lib/controller.js',
@@ -329,7 +329,7 @@ class FrontendBridgeHelper extends Helper {
 	protected function _includeComponents() {
 		// for now, we just include all components
 		$appComponentFolder = WWW_ROOT . 'js/app/components/';
-		$folder = new \Cake\Filesystem\Folder($appComponentFolder);
+		$folder = new Folder($appComponentFolder);
 		$files = $folder->find('.*\.js');
 		if (!empty($files)) {
 			foreach ($files as $file) {
@@ -339,7 +339,7 @@ class FrontendBridgeHelper extends Helper {
 
 		// Add Plugin Components
 		foreach (Plugin::loaded() as $pluginName) {
-			$pluginJsComponentsFolder = APP . 'Plugin/' . $pluginName . '/webroot/js/app/components/';
+			$pluginJsComponentsFolder = Plugin::path($pluginName) . '/webroot/js/app/components/';
 			if (is_dir($pluginJsComponentsFolder)) {
 				$folder = new Folder($pluginJsComponentsFolder);
 				$files = $folder->find('.*\.js');
