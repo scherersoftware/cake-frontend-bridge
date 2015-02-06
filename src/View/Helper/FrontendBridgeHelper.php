@@ -122,7 +122,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	public function getNamespaceDefinitions() {
 		$script = 'var Frontend = {};';
-		$script .= 'var App = { Controllers: {}, Components: {} };';
+		$script .= 'var App = { Controllers: {}, Components: {}, Lib: {} };';
 		$tpl = 'App.Controllers.%s = {};';
 		foreach ($this->_pluginJsNamespaces as $pluginName) {
 			$script .= sprintf($tpl, $pluginName);
