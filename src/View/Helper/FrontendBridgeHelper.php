@@ -23,7 +23,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	protected $_dependencies = array(
 		'/frontend_bridge/js/lib/basics.js',
-		'/frontend_bridge/js/lib/class.js',
+		'/frontend_bridge/js/lib/base_class.js',
 		'/frontend_bridge/js/lib/publish_subscribe_broker.js',
 		'/frontend_bridge/js/lib/app.js',
 		'/frontend_bridge/js/lib/controller.js',
