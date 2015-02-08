@@ -39,8 +39,8 @@ Frontend.Controller = Class.extend({
 		this._frontendData = frontendData;
 		this.name = this._frontendData.request.controller;
 		this.action = this._frontendData.request.action;
-		
-		this._dom = $('div.controller.' + this._frontendData.request.controller + '-' + this._frontendData.request.action);
+
+		this._dom = $('div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action));
 		this.$ = this._dom.find.bind(this._dom);
 
 		this.__initComponents();
