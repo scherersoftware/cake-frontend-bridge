@@ -59,17 +59,17 @@ Frontend.App = Class.extend({
 	/**
 	 * Makes an AJAX request and triggers the _onWidgetLoaded() event
 	 *
-	 * @param mixed	url			Either a string url or a Router compatible url object
-	 * @param obj 	options		options object, all keys are optional
-	 * 							- target: 		A DOM element where the resulting
-	 * 											HTML will be inserted.
-	 * 							- onComplete	This function will be called if the json action
-	 * 											request was successful. Will receive
-	 * 											the json action controller as an argument, if available.
-	 * 							- data			POST data
-	 * 							- onError		This function will be called if an error 
-	 * 											occured, it will receive the ajax response
-	 * 											as an argument.
+	 * @param mixed url			Either a string url or a Router compatible url object
+	 * @param obj	options		options object, all keys are optional
+	 *							- target:		A DOM element where the resulting
+	 *											HTML will be inserted.
+	 *							- onComplete	This function will be called if the json action
+	 *											request was successful. Will receive
+	 *											the json action controller as an argument, if available.
+	 *							- data			POST data
+	 *							- onError		This function will be called if an error 
+	 *											occured, it will receive the ajax response
+	 *											as an argument.
 	 * @return void 
 	 */
 	loadJsonAction: function(url, options) {
@@ -83,7 +83,8 @@ Frontend.App = Class.extend({
 			onError: null,
 			parentController: null,
 			initController: true,
-			replaceTarget: false
+			replaceTarget: false,
+			dialog: null
 		}, options);
 		if(typeof url == 'object') {
 			url.prefix = 'json_action/';
@@ -120,6 +121,7 @@ Frontend.App = Class.extend({
 		}
 		var controller = null;
 		if(typeof response.data.frontendData == 'object' && options.initController) {
+			console.log(options);
 			setTimeout(function() {
 				controller = this._loadController(response.data.frontendData, options.parentController);
 			}.bind(this), 10);

@@ -40,7 +40,8 @@ Frontend.Controller = Class.extend({
 		this.name = this._frontendData.request.controller;
 		this.action = this._frontendData.request.action;
 
-		this._dom = $('div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action));
+		var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action);
+		this._dom = $(selector);
 		this.$ = this._dom.find.bind(this._dom);
 
 		this.__initComponents();
@@ -155,12 +156,13 @@ Frontend.Controller = Class.extend({
 	 * @return {void}
 	 */
 	openDialog: function(url, onClose) {
-		this._dialog = new App.Dialog({
+		this._dialog = new Frontend.Dialog({
 			onClose: onClose
 		});
 		this._dialog.blockUi();
 		App.Main.loadJsonAction(url, {
 			parentController: this,
+			dialog: this._dialog,
 			target: this._dialog.getContent(),
 			onComplete: function() {
 				this._dialog.show();

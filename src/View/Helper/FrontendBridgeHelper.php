@@ -28,6 +28,7 @@ class FrontendBridgeHelper extends Helper {
 		'/frontend_bridge/js/lib/app.js',
 		'/frontend_bridge/js/lib/controller.js',
 		'/frontend_bridge/js/lib/component.js',
+		'/frontend_bridge/js/lib/dialog.js',
 		'/frontend_bridge/js/lib/router.js',
 		'/frontend_bridge/js/lib/ui_blocker.js',
 		'/frontend_bridge/js/vendor/jquery.blockUI.js'
@@ -71,7 +72,7 @@ class FrontendBridgeHelper extends Helper {
  */
 	public function getMainContentClasses() {
 		$classes = ['controller'];
-		$classes[] = Inflector::underscore($this->_View->request->controller . '-' . $this->_View->request->action);
+		$classes[] = Inflector::underscore($this->_View->request->controller) . '-' . Inflector::underscore($this->_View->request->action);
 		return implode(' ', $classes);
 	}
 
