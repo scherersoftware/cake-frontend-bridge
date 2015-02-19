@@ -121,7 +121,6 @@ Frontend.App = Class.extend({
 		}
 		var controller = null;
 		if(typeof response.data.frontendData == 'object' && options.initController) {
-			console.log(options);
 			setTimeout(function() {
 				controller = this._loadController(response.data.frontendData, options.parentController);
 			}.bind(this), 10);

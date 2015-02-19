@@ -44,6 +44,10 @@ Frontend.Controller = Class.extend({
 		this._dom = $(selector);
 		this.$ = this._dom.find.bind(this._dom);
 
+		this._dom.find('.dialog-ajax-form').each(function(i, el) {
+			this._ajaxDialogFormSetup($(el));
+		}.bind(this));
+
 		this.__initComponents();
 		this._initialize();
 	},
@@ -140,6 +144,9 @@ Frontend.Controller = Class.extend({
 				data: $form.serialize(),
 				parentController: this.parentController,
 				onComplete: function(controller, response) {
+					if ($form.hasClass('dialog-ajax-form-close-on-success') && response.data.frontendData.jsonData.success) {
+						$('.modal').modal('hide').data('bs.modal', null);
+					}
 					App.Main.UIBlocker.unblockElement(this._dom);
 					if (typeof callback === 'function') {
 						callback(controller, response);
