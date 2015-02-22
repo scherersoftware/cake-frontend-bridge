@@ -149,11 +149,13 @@ class FrontendBridgeHelper extends Helper {
  * @return void
  */
 	public function addAllControllers() {
+		$controllers = [];
+
 		// app/controllers/posts/*_controller.js
 		$folder = new \Cake\Filesystem\Folder(WWW_ROOT . 'js/app/controllers');
 		foreach ($folder->findRecursive('.*\.js') as $file) {
 			$jsFile = '/' . str_replace(WWW_ROOT, '', $file);
-			$this->_addDependency($jsFile);
+			$controllers[] = $jsFile;
 		}
 
 		// Add All Plugin Controllers
@@ -168,9 +170,21 @@ class FrontendBridgeHelper extends Helper {
 				foreach ($files as $file) {
 					$file = str_replace('\\', '/', $file);
 					$file = str_replace($pluginJsControllersFolder, '', $file);
-					$this->_dependencies[] = '/' . Inflector::underscore($pluginName) . '/js/app/controllers/' . $file;
+					$controllers[] = '/' . Inflector::underscore($pluginName) . '/js/app/controllers/' . $file;
 				}
 			}
+		}
+
+		// Move all controllers with base_ prefix to the top, so other controllers
+		// can inherit from them
+		foreach ($controllers as $n => $file) {
+			if(substr(basename($file), 0, 5) == 'base_') {
+				unset($controllers[$n]);
+				array_unshift($controllers, $file);
+			}
+		}
+		foreach ($controllers as $file) {
+			$this->_addDependency($file);
 		}
 	}
 
