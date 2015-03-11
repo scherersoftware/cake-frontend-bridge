@@ -38,4 +38,15 @@ trait FrontendBridgeTrait {
 		$response = parent::render($view, $layout);
 		return $this->jsonActionResponse($response);
 	}
+
+/**
+ * Detect if the current request should be rendered as a JSON Action
+ *
+ * @return bool
+ */
+	protected function _isJsonActionRequest() {
+		return 
+			(isset($this->request->params['jsonAction']) && $this->request->params['jsonAction'] === true)
+			|| $this->request->query('json_action') == 1;
+	}
 }

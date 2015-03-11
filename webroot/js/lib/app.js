@@ -87,7 +87,11 @@ Frontend.App = Class.extend({
 			dialog: null
 		}, options);
 		if(typeof url == 'object') {
-			url.prefix = 'json_action/';
+			//url.prefix = 'json_action/';
+			if (typeof url.query !== 'object') {
+				url.query = {};
+			}
+			url.query.json_action = 1;
 		}
 		this.request(url, options.data, function(response) {
 			switch(response.code) {
