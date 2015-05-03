@@ -8,6 +8,7 @@ use Cake\Filesystem\Folder;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
+use Cake\View\View;
 
 class FrontendBridgeHelper extends Helper {
 
@@ -62,6 +63,31 @@ class FrontendBridgeHelper extends Helper {
 		);
 		$this->_includeAppController();
 		$this->_includeComponents();
+	}
+
+/**
+ * Compiles an AssetCompress-compatible list of assets to be used in asset_compress.ini
+ * files as a callback method
+ *
+ * @return array
+ */
+	public static function getAssetCompressFiles() {
+		$helper = new FrontendBridgeHelper(new View());
+		$dependencies = $helper->compileDependencies();
+		$plugins = array_map('\Cake\Utility\Inflector::underscore', Plugin::loaded());
+
+		foreach ($dependencies as $n => $dependency) {
+			$parts = explode('/', $dependency);
+			if (empty($parts[0]) && in_array($parts[1], $plugins)) {
+				$prefix = '/' . $parts[1] . '/';
+				$dependency = preg_replace('/^' . str_replace('/', '\/', $prefix) . '/', 'plugin:' . Inflector::camelize($parts[1]) . ':/', $dependency);
+			}
+			if (substr($dependency, 0, 4) == '/js/') {
+				$dependency = substr($dependency, 4);
+			}
+			$dependencies[$n] = $dependency;
+		}
+		return $dependencies;
 	}
 
 /**
