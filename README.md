@@ -1,8 +1,20 @@
 CakePHP Frontend Bridge
-======================
+=======================
+
+
+## Bake JS Controllers
+
+You can bake JS Controllers for your controller actions by using the bake shell. Just pass the controller name and the camelized action name.
+
+    bin/cake bake js_controller Posts addPost
+
+This command will create the JS controller file and if necessary the directory structure for it.
+
+You can also bake JS controllers into your plugins by using the `--plugin` option.
 
 
 
+## License
 
 The MIT License (MIT)
 
