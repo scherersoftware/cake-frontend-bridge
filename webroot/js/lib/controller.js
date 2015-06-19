@@ -134,7 +134,7 @@ Frontend.Controller = Class.extend({
 			action: this.action,
 			pass: this._frontendData.request.pass,
 			plugin: this._frontendData.request.plugin,
-			named: this._frontendData.request.named
+			query: this._frontendData.request.query
 		};
 		$form.submit(function(e) {
 			e.preventDefault();
