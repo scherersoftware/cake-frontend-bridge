@@ -125,9 +125,14 @@ class FrontendBridgeComponent extends Component {
 		$this->setJson('isMobile', $this->_controller->request->is('mobile'));
 		$this->setJson('debug', Configure::read('debug'));
 
+		$ssl = false;
+		if (env('HTTPS') || $this->_controller->request->is('ssl') || $this->_controller->request->env('HTTP_X_FORWARDED_PROTO') == 'https') {
+			$ssl = true;
+		}
+
 		$appData = array(
 			'jsonData' => $this->_jsonData,
-			'webroot' => 'http' . (env('HTTPS') ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
+			'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
 			'url' => $this->_controller->request->url,
 			// 'controller' => $this->_controller->name,
 			// 'action' => $this->_controller->request->action,
