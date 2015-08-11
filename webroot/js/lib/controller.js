@@ -146,6 +146,7 @@ Frontend.Controller = Class.extend({
 				onComplete: function(controller, response) {
 					if ($form.hasClass('dialog-ajax-form-close-on-success') && response.data.frontendData.jsonData.success) {
 						$('.modal').modal('hide').data('bs.modal', null);
+						App.Main.publishEvent('ajaxDialog.closed', response);
 					}
 					App.Main.UIBlocker.unblockElement(this._dom);
 					if (typeof callback === 'function') {
