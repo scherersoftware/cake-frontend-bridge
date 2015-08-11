@@ -50,7 +50,7 @@ Frontend.Router = Class.extend({
 		}
 		
 		if(plugin) {
-			plugin = plugin + '/';
+			plugin = plugin.toLowerCase() + '/';
 		} else {
 			plugin = '';
 		}
