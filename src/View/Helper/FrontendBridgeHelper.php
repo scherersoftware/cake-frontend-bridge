@@ -323,6 +323,24 @@ class FrontendBridgeHelper extends Helper {
 		return false;
 	}
 
+
+/**
+ * Allows manipulating frontend data
+ *
+ * @param string|array $key Either the key or an array
+ * @param mixed $value Value
+ * @return void
+ */
+	public function setFrontendData($key, $value = null) {
+		if (is_array($key)) {
+			foreach ($key as $k => $v) {
+				$this->setFrontendData($k, $v);
+			}
+			return;
+		}
+		$this->_frontendData['jsonData'][$key] = $value;
+	}
+
 /**
  * Constructs the JS for setting the appData
  *
