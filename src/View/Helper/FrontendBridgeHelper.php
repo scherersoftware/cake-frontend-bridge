@@ -80,7 +80,7 @@ class FrontendBridgeHelper extends Helper {
 			$parts = explode('/', $dependency);
 			if (empty($parts[0]) && in_array($parts[1], $plugins)) {
 				$prefix = '/' . $parts[1] . '/';
-				$dependency = preg_replace('/^' . str_replace('/', '\/', $prefix) . '/', 'plugin:' . Inflector::camelize($parts[1]) . ':/', $dependency);
+				$dependency = preg_replace('/^' . str_replace('/', '\/', $prefix) . '/', 'plugin:' . Inflector::camelize($parts[1]) . ':', $dependency);
 			}
 			if (substr($dependency, 0, 4) == '/js/') {
 				$dependency = substr($dependency, 4);
