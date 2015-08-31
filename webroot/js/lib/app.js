@@ -173,15 +173,18 @@ Frontend.App = Class.extend({
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
-				var response = {
-					code: 'error',
-					requestData: requestData,
-					responseText: jqXHR.responseText
-				};
+				var responseText = jqXHR.responseText;
+				var response = $.parseJSON(responseText);
+				if (typeof response != 'object') {
+					response = {
+						code: 'error',
+						requestData: requestData,
+						responseText: responseText
+					};
+				}
 				if(typeof responseCallback == 'function') {
 					responseCallback(response);
 				}
-				//console.error(jqXHR, textStatus, errorThrown);
 			}
 		});
 	},
