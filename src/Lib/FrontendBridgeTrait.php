@@ -15,13 +15,13 @@ trait FrontendBridgeTrait
         // get the frontendData set by the Frontend plugin and remove unnecessary data
         $frontendData = $this->viewVars['frontendData'];
         unset($frontendData['Types']);
-        $response = array(
+        $response = [
             'code' => 'success',
-            'data' => array(
+            'data' => [
                 'frontendData' => $frontendData,
                 'html' => $response->body()
-            )
-        );
+            ]
+        ];
         return new \FrontendBridge\Lib\ServiceResponse($response);
     }
 
@@ -38,7 +38,10 @@ trait FrontendBridgeTrait
             $layout = 'FrontendBridge.json_action';
         }
         if ($this->RequestHandler) {
+            // Make sure the view is rendered as HTML, even if it is an AJAX request
+            // jsonActionResponse() will make sure the JSON response is rendered correctly
             $this->RequestHandler->renderAs($this, 'ajax');
+            $this->RequestHandler->ext = 'html';
         }
         $response = parent::render($view, $layout);
         return $this->jsonActionResponse($response);
