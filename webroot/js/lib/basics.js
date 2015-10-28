@@ -43,9 +43,9 @@ function camelCase(str) {
 	}
 	var parts = str.split('_');
 	var res = '';
-	for(var i in parts) {
-		res += ucfirst(parts[i]);
-	}
+	$.each(parts, function (index, part) {
+		res += ucfirst(part);
+	});
 	return res;
 }
 function trim (str, charlist) {
