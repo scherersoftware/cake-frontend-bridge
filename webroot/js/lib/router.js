@@ -58,9 +58,9 @@ Frontend.Router = Class.extend({
 		var url = this.webroot + prefix + plugin + controller + '/' + action + '/';
 
 		if(pass instanceof Array) {
-			for(var i in pass) {
-				url += pass[ i ] + '/';
-			}
+			$.each(pass, function (i, val) {
+				url += val + '/';
+			});
 		}
 		
 		if(typeof query == 'object') {
