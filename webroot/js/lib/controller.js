@@ -130,7 +130,7 @@ Frontend.Controller = Class.extend({
 			return false;
 		}
 		var url = {
-			controller: this.name,
+			controller: camelCase(this.name),
 			action: this.action,
 			pass: this._frontendData.request.pass,
 			plugin: this._frontendData.request.plugin,
