@@ -186,8 +186,9 @@ class FrontendBridgeHelper extends Helper {
 
 		// Add All Plugin Controllers
 		foreach (Plugin::loaded() as $pluginName) {
-			$pluginJsControllersFolder = Plugin::path($pluginName) . '/webroot/js/app/controllers/';
-			$pluginJsControllersFolder = str_replace('\\', '/', $pluginJsControllersFolder);
+            $pluginPath = Plugin::path($pluginName);
+            $pluginJsControllersFolder = $pluginPath . (substr($pluginPath, -1) === '/' ? '' : '/') . 'webroot/js/app/controllers/';
+            $pluginJsControllersFolder = str_replace('\\', '/', $pluginJsControllersFolder);
 
 			if (is_dir($pluginJsControllersFolder)) {
 				$this->_pluginJsNamespaces[] = $pluginName;
