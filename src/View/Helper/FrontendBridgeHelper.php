@@ -52,6 +52,13 @@ class FrontendBridgeHelper extends Helper {
 	protected $_pluginJsNamespaces = [];
 
 /**
+ * True if functionality is used for the AssetCompress plugin
+ *
+ * @var bool
+ */
+	protected $_assetCompressMode = false;
+
+/**
  * Initialize the helper. Needs to be called before running it.
  *
  * @param array $frontendData Data to be passed to the frontend
@@ -109,11 +116,13 @@ class FrontendBridgeHelper extends Helper {
  * @return array
  */
 	public function compileDependencies($defaultControllers = array()) {
+		$this->_assetCompressMode = true;
 		$this->_includeAppController();
 		$this->_includeComponents();
 		$this->addController($defaultControllers);
 		$this->addAllControllers();
 		$this->_dependencies[] = '/frontend_bridge/js/bootstrap.js';
+		$this->_assetCompressMode = false;
 		return array_unique($this->_dependencies);
 	}
 
@@ -194,10 +203,15 @@ class FrontendBridgeHelper extends Helper {
 				$this->_pluginJsNamespaces[] = $pluginName;
 				$folder = new \Cake\Filesystem\Folder($pluginJsControllersFolder);
 				$files = $folder->findRecursive('.*\.js');
+
 				foreach ($files as $file) {
 					$file = str_replace('\\', '/', $file);
 					$file = str_replace($pluginJsControllersFolder, '', $file);
-					$controllers[] = '/' . Inflector::underscore($pluginName) . '/js/app/controllers/' . $file;
+					if ($this->_assetCompressMode) {
+						$controllers[] = 'plugin:' . $pluginName . ':js/app/controllers/' . $file;
+					} else {
+						$controllers[] = '/' . Inflector::underscore($pluginName) . '/js/app/controllers/' . $file;
+					}
 				}
 			}
 		}
