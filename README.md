@@ -1,4 +1,4 @@
-CakePHP Frontend Bridge
+CakePHP3 cake-frontend-bridge
 =======================
 
 A plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
