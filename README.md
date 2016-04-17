@@ -1,10 +1,10 @@
-#CakePHP3 cake-frontend-bridge
+# CakePHP Frontend Bridge
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 
 A plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
 
-## Requirements
+## Dependencies
 
 - [Twitter Bootstrap 3.x](http://getbootstrap.com/)
 - [jQuery](https://jquery.com/)
@@ -18,12 +18,12 @@ A plugin that allows the creation of JavaScript Controllers for Controller-actio
 	"codekanzlei/cake-frontend-bridge": "dev-master",
 }
 ```
-		
+
 #### 2. Include the plugin using composer
 Open a terminal in your project-folder and run
 
 	$ composer update
-	
+
 #### 3. Load the plugin in `config/bootstrap.php`
 
 ```
@@ -35,7 +35,7 @@ Plugin::load('FrontendBridge', ['bootstrap' => false, 'routes' => true, 'autoloa
 Create the following files and set them up using the given code.
 
 - `app_controller.js`
-	
+
 	**path:**`/webroot/js/app/`
 
 	**template code:**
@@ -47,7 +47,7 @@ Create the following files and set them up using the given code.
 	        this.startup();
 	    }
 	});
-	```	
+	```
 
 #### 5. Configure `AppController.php`
 
@@ -70,6 +70,20 @@ use \FrontendBridge\Lib\FrontendBridgeTrait;
 ```
 'FrontendBridge.FrontendBridge',
 ```
+
+#### 6. Load the scripts
+
+Inside your ```<head>``` section add the following code to load all needed .js controllers:
+
+```
+<?php if(isset($this->FrontendBridge)) {
+	$this->FrontendBridge->init($frontendData);
+	echo $this->FrontendBridge->run();
+} ?>
+```
+
+In development add ```$this->FrontendBridge->addAllControllers();``` into the if block to load without exceptions all .js controllers
+
 
 ## Bake JS Controllers
 
@@ -107,7 +121,7 @@ Use the following basic setup to pass data from the Backend to the Frontend via 
 	display content of json var
 	<span class="findMe"></span>
 	```
-	
+
 - **action\_controller.js** (FrontendBridge JS-Controller)
 
 	```
@@ -176,7 +190,7 @@ Use the following basic setup to use a modal view element as an edit form that p
 		            <?= $this->Form->input('name'); ?>
 		            // [further input fields]
 		        </fieldset>
-		        
+
 		        <div class="modal-footer">
 		        	// FormEnd (save) button generated using CkTools
 		            <?= $this->CkTools->formButtons(['cancelButton' => false]); ?>
@@ -187,7 +201,7 @@ Use the following basic setup to use a modal view element as an edit form that p
 	```
 
 - **edit\_modal\_controller.js** (FrontendBridge JS-Controller)
-	
+
 	```
 	startup: function() {
 		//  add an EventListener to element with class 'modal-form'
@@ -201,7 +215,7 @@ Use the following basic setup to use a modal view element as an edit form that p
 	    }.bind(this));
 	}
 	```
-		
+
 ### 3.) Generate custom AJAX requests
 
 Use the following setup to generate custom AJAX requests. Using FrontendBridge's 'request' action, we will pass JSON data from the Backend to the Frontend.
@@ -218,13 +232,13 @@ Use the following setup to generate custom AJAX requests. Using FrontendBridge's
         ]); // JSON data which will be logged in your browser console
     }
    ```
-	    
+
 - **index.ctp** (Cake View file)
 
 	```
 	<a class="ajax-json-demo">Get JSON data</a>
 	```
-		
+
 - **index\_controller.js** (FrontendBridge JS-Controller)
 
 	```
@@ -260,7 +274,7 @@ This example assumes a Table called `Users` with a field `username` in your data
     public function index() {
     	// renders index.ctp
     }
-	
+
     public function search() {
         $users = null;
         if ($this->request->is(['patch', 'post', 'put']) && !empty($this->request->data['search'])) {
@@ -273,7 +287,7 @@ This example assumes a Table called `Users` with a field `username` in your data
         $this->set(compact('users'));
     }
 	```
-	    
+
 - **index.ctp** (Cake View file)
 
 	```
@@ -285,9 +299,9 @@ This example assumes a Table called `Users` with a field `username` in your data
 	<!-- search results (search.ctp) will be rendered here -->
 	<div class="results"></div>
 	```
-		
+
 - **search.ctp** (Cake View file)
-		
+
 	```
 	<?php if(!empty($users)) : ?>
 		<?php foreach($users as $user) : ?>
@@ -297,7 +311,7 @@ This example assumes a Table called `Users` with a field `username` in your data
 		no results to display
 	<?php endif; ?>
 	```
-		
+
 - **index\_controller.js** (FrontendBridge JS-Controller)
 
 	```
@@ -306,7 +320,7 @@ This example assumes a Table called `Users` with a field `username` in your data
 	    	// set KeyUp-EventListener to field with id 'search' in index.ctp
 	        this.$('#search').keyup(this._search.bind(this));
 	    },
-	    
+
 	    // called at eatch keyup-event in 'search'
 	    _search: function() {
 	        var $renderTarget = this.$('.results');
@@ -314,7 +328,7 @@ This example assumes a Table called `Users` with a field `username` in your data
 	            controller: 'Search',
 	            action: 'search'
 	        }
-	        
+
 	        // create a custom AJAX request with the user input included in the post-data
 	        App.Main.loadJsonAction(url, {
 	            data: {
@@ -331,7 +345,7 @@ This example assumes a Table called `Users` with a field `username` in your data
 - **loadJsonAction**
 
 	Allows dynamically loading content in the view using AJAX according to user interaction. Uses `request`.
-	
+
 - **request**
 
 	Allows generating custom AJAX requests.

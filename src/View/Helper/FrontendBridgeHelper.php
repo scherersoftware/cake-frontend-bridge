@@ -178,8 +178,8 @@ class FrontendBridgeHelper extends Helper {
 
 /**
  * Adds all controllers in app/controllers to the dependencies.
- * 
- * Please use only in development model.
+ *
+ * Please use only in development mode!
  *
  * @return void
  */
@@ -231,7 +231,7 @@ class FrontendBridgeHelper extends Helper {
 
 /**
  * Include one or more JS controllers. Supports the 2 different file/folder structures.
- * 
+ *
  * - app/controllers/posts_edit_permissions_controller.js
  * - app/controllers/posts/edit_permissions_controller.js
  * - app/controllers/posts_controller.js
@@ -240,7 +240,7 @@ class FrontendBridgeHelper extends Helper {
  * @param string|array $controllerName Dot-separated controller, TitleCased name.
  * 										Posts.EditPermissions
  * 										Posts.* (include all)
- * 										
+ *
  * @return bool
  */
 	public function addController($controllerName) {
@@ -317,7 +317,7 @@ class FrontendBridgeHelper extends Helper {
 	}
 
 /**
- * Include one or more JS components 
+ * Include one or more JS components
  *
  * @param string|array $componentName CamelCased component name	(e.g. SelectorAddressList)
  * @return bool
