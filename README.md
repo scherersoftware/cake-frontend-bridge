@@ -1,8 +1,7 @@
-# CakePHP Frontend Bridge
-
+![CakePHP 3 Notifications Plugin](https://raw.githubusercontent.com/scherersoftware/cake-frontend-bridge/master/cake-frontend-bridge.png)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 
-A plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
+A CakePHP 3 plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
 
 ## Dependencies
 
@@ -84,6 +83,19 @@ Inside your ```<head>``` section add the following code to load all needed .js c
 
 In development add ```$this->FrontendBridge->addAllControllers();``` into the if block to load without exceptions all .js controllers
 
+#### 7. Add Main Content Classes
+
+Inside your `Layout\default.ctp` add the following line. Inside the div should be your content. 
+
+```
+<div class="<?= $this->FrontendBridge->getMainContentClasses() ?>">
+    ...
+    <?= $this->fetch('content') ?>
+    ...
+</div>
+```
+
+Also add this to other layout files, if you're using them.
 
 ## Bake JS Controllers
 
