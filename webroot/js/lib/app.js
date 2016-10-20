@@ -154,7 +154,7 @@ Frontend.App = Class.extend({
 			postData: data
 		};
 
-		$.ajax({
+		var ajaxData = {
 			type: requestType,
 			data: data,
 			url: url,
@@ -186,7 +186,13 @@ Frontend.App = Class.extend({
 					responseCallback(response);
 				}
 			}
-		});
+		};
+
+		if((window.FormData !== undefined) && (data instanceof FormData)) {
+			$.extend(ajaxData, {processData: false, contentType: false});
+		}
+
+		$.ajax(ajaxData);
 	},
 	/**
 	 * Redirects the user to another page
