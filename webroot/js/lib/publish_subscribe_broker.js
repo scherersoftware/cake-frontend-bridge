@@ -1,12 +1,12 @@
 /**
- * Implements the Publish-Subscribe pattern. Used by Frontend.App 
+ * Implements the Publish-Subscribe pattern. Used by Frontend.App
  * to ease events communication between components.
  */
 Frontend.PublishSubscribeBroker = Class.extend({
 	/**
 	 * Holds the topics and their subscribers
 	 *
-	 * @var obj 
+	 * @var obj
 	 */
 	_topics: {},
 	/**
@@ -25,10 +25,10 @@ Frontend.PublishSubscribeBroker = Class.extend({
 	 * 						must be given to unsubscribe()
 	 */
 	subscribe: function(topic, handler, scope) {
-		if(typeof this._topics[ topic ] == 'undefined') {
+		if (typeof this._topics[ topic ] == 'undefined') {
 			this._topics[ topic ] = new Array;
 		}
-		if(scope != undefined) {
+		if (scope != undefined) {
 			handler = hitch(handler, scope);
 		}
 		var subscriptionId = ++this._subscriptionIdCounter;
@@ -42,7 +42,7 @@ Frontend.PublishSubscribeBroker = Class.extend({
 	 * Unsubscribe from a topic.
 	 *
 	 * @param obj	subscriptionHandle	Object containing the topic and the subscription id
-	 * @return void 
+	 * @return void
 	 */
 	unsubscribe: function(subscriptionHandle) {
 		var topic = subscriptionHandle.topic;
@@ -53,11 +53,11 @@ Frontend.PublishSubscribeBroker = Class.extend({
 	 * Publish a topic.
 	 *
 	 * @param {string} 	topic	The topic identifier
-	 * @param {mixed} 	data	This data will be given the subscription handler as function param 
-	 * @return void 
+	 * @param {mixed} 	data	This data will be given the subscription handler as function param
+	 * @return void
 	 */
 	publish: function(topic, data) {
-		if(typeof this._topics[ topic ] == 'undefined') {
+		if (typeof this._topics[ topic ] == 'undefined') {
 			this._topics[ topic ] = [];
 		}
 		for(var i in this._topics[ topic ]) {

@@ -9,7 +9,7 @@ Frontend.Component = Class.extend({
 	/**
 	 * Class constructor
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	init: function(controller) {
 		this.Controller = controller;
@@ -19,7 +19,7 @@ Frontend.Component = Class.extend({
 	/**
 	 * Startup callback - for overriding
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	startup: function() {}
 });

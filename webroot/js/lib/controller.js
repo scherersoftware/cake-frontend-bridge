@@ -32,7 +32,7 @@ Frontend.Controller = Class.extend({
 	 *
 	 * @param	obj		vars	The controller vars made available by setJson()
 	 * @param	Controller	parentController	(optional) Parent controller instance.
-	 * @return	void 
+	 * @return	void
 	 */
 	init: function(frontendData, parentController) {
 		this.parentController = parentController;
@@ -58,7 +58,7 @@ Frontend.Controller = Class.extend({
 	 * @return mixed
 	 */
 	getVar: function(key) {
-		if(typeof this._frontendData.jsonData[ key ] != 'undefined') {
+		if (typeof this._frontendData.jsonData[ key ] != 'undefined') {
 			return this._frontendData.jsonData[ key ];
 		}
 		return null;
@@ -66,7 +66,7 @@ Frontend.Controller = Class.extend({
 	/**
 	 * Startup callback - can be implemented by sub controllers
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	_initialize: function() {
 		this.startup();
@@ -74,13 +74,13 @@ Frontend.Controller = Class.extend({
 	/**
 	 * Startup callback - can be implemented by sub controllers
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	startup: function() {},
 	/**
 	 * Initializes the configured components
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	__initComponents: function() {
 		for(var i in this.baseComponents) {
@@ -88,11 +88,11 @@ Frontend.Controller = Class.extend({
 		}
 		for(var i in this.components) {
 			var name = this.components[i] + 'Component';
-			if(typeof window['App']['Components'][ name ] == "function") {
+			if (typeof window['App']['Components'][ name ] == "function") {
 				this[ this.components[i] ] = new window['App']['Components'][ name ](this);
 				this[ this.components[i] ].startup();
 			}
-			else if(typeof this.components[i] == 'string') {
+			else if (typeof this.components[i] == 'string') {
 				console.error("Component %s not found", this.components[i]);
 			}
 		}
@@ -102,8 +102,8 @@ Frontend.Controller = Class.extend({
 	 *
 	 * @param mixed		url		Either a string url or a Router-compatible url object
 	 * @param Object	data	(optional)	POST data
-	 * @param Function	responseCallback	The function which will receive the response 
-	 * @return void 
+	 * @param Function	responseCallback	The function which will receive the response
+	 * @return void
 	 */
 	request: function(url, data, responseCallback) {
 		App.Main.request(url, data, responseCallback);

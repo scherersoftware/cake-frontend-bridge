@@ -3,13 +3,13 @@
  *
  */
 if (!Function.prototype.bind) {
-	Function.prototype.bind = function(){  
+	Function.prototype.bind = function(){
 		var fn = this, args = Array.prototype.slice.call(arguments),
-		object = args.shift(); 
-		return function(){ 
-			return fn.apply(object, 
+		object = args.shift();
+		return function(){
+			return fn.apply(object,
 				args.concat(Array.prototype.slice.call(arguments))
-			); 
+			);
 		};
 	};
 }
@@ -27,7 +27,7 @@ function ucfirst (str) {
 }
 function stringUnderscore(str){
 	var res = str.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
-	if(res.substr(0, 1) == '_') {
+	if (res.substr(0, 1) == '_') {
 		res = res.substr(1);
 	}
 	return res;
@@ -38,7 +38,7 @@ function stringUnderscore(str){
  * @return string
  */
 function camelCase(str) {
-	if(typeof str != 'string') {
+	if (typeof str != 'string') {
 		return str;
 	}
 	var parts = str.split('_');
@@ -170,17 +170,17 @@ function getFormValues($form) {
  */
 function dump(arr,level) {
 	var dumped_text = "";
-	if(!level) level = 0;
-	
+	if (!level) level = 0;
+
 	//The padding given at the beginning of the line.
 	var level_padding = "";
 	for(var j=0;j<level+1;j++) level_padding += "    ";
-	
-	if(typeof(arr) == 'object') { //Array/Hashes/Objects 
+
+	if (typeof(arr) == 'object') { //Array/Hashes/Objects
 		for(var item in arr) {
 			var value = arr[item];
-			
-			if(typeof(value) == 'object') { //If it is an array,
+
+			if (typeof(value) == 'object') { //If it is an array,
 				dumped_text += level_padding + "'" + item + "' ...\n";
 				dumped_text += dump(value,level+1);
 			} else {
@@ -210,7 +210,7 @@ function sortSelect($select) {
     for(i = 2; i < cl.length; i++)
     {
         var parts = clTexts[i-2].split(',');
-        
+
         cl.options[i].text = parts[1];
         cl.options[i].value = parts[2];
     }
@@ -277,7 +277,7 @@ function http_build_query (formdata, numeric_prefix, arg_separator) {
       val = "0";
     }
     if (val != null) {
-      if(typeof(val) === "object") {
+      if (typeof(val) === "object") {
         for (k in val) {
           if (val[k] != null) {
             tmp.push(_http_build_query_helper(key + "[" + k + "]", val[k], arg_separator));
@@ -303,7 +303,7 @@ function http_build_query (formdata, numeric_prefix, arg_separator) {
       key = String(numeric_prefix) + key;
     }
     var query=_http_build_query_helper(key, value, arg_separator);
-    if(query != '') {
+    if (query != '') {
       tmp.push(query);
     }
   }

@@ -1,6 +1,6 @@
 Frontend.UIBlocker = Class.extend({
 	init: function() {
-		
+
 	},
 	_blockUiOptions: {
 		fadeIn: 50,

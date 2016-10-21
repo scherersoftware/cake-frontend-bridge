@@ -7,14 +7,14 @@ Frontend.App = Class.extend({
 	/**
 	 * Holds an instance of the router class
 	 *
-	 * @var Frontend.Router 
+	 * @var Frontend.Router
 	 */
 	Router: null,
 	/**
 	 * Class constructor
-	 * 
+	 *
 	 * @param {ob} appData Application JSON vars from the backend
-	 * @return void 
+	 * @return void
 	 */
 	init: function(appData) {
 		this.appData = appData;
@@ -22,31 +22,31 @@ Frontend.App = Class.extend({
 		this.Router = new Frontend.Router(appData);
 		this.UIBlocker = new Frontend.UIBlocker();
 	},
-	
+
 	/**
 	 * Called on document ready.
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	startup: function() {
 		// initialize the main controller, if available
 		this.PageController = this._loadController(this.appData);
 	},
-	
+
 	/**
 	 * Initialize a controller based on the frontendData
-	 * 
+	 *
 	 * @returns void
 	 */
 	_loadController: function(frontendData, parentController) {
 		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
 
-		if(frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
+		if (frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
 			this._controllers[actionControllerName] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController);
 			controller = this._controllers[actionControllerName];
 		}
-		else if(window['App']['Controllers'][ actionControllerName ]) {
+		else if (window['App']['Controllers'][ actionControllerName ]) {
 			this._controllers[actionControllerName] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController);
 			controller = this._controllers[actionControllerName];
 		}
@@ -67,13 +67,13 @@ Frontend.App = Class.extend({
 	 *											request was successful. Will receive
 	 *											the json action controller as an argument, if available.
 	 *							- data			POST data
-	 *							- onError		This function will be called if an error 
+	 *							- onError		This function will be called if an error
 	 *											occured, it will receive the ajax response
 	 *											as an argument.
-	 * @return void 
+	 * @return void
 	 */
 	loadJsonAction: function(url, options) {
-		if(!options) {
+		if (!options) {
 			var options = {};
 		}
 		var options = jQuery.extend({}, {
@@ -86,7 +86,7 @@ Frontend.App = Class.extend({
 			replaceTarget: false,
 			dialog: null
 		}, options);
-		if(typeof url == 'object') {
+		if (typeof url == 'object') {
 			//url.prefix = 'json_action/';
 			if (typeof url.query !== 'object') {
 				url.query = {};
@@ -99,10 +99,10 @@ Frontend.App = Class.extend({
 					this._onJsonActionLoaded(response, options);
 					break;
 				default:
-					if(typeof options.onError == 'function') {
+					if (typeof options.onError == 'function') {
 						options.onError(response);
 					}
-					else if(this._errorHandler != null) {
+					else if (this._errorHandler != null) {
 						this._errorHandler.handleError(response);
 					}
 					console.log('loadJsonAction error: ', response);
@@ -114,22 +114,22 @@ Frontend.App = Class.extend({
 	 *
 	 * @param obj response	The AJAX response
 	 * @param obj options	The loadJsonAction() options
-	 * @return void 
+	 * @return void
 	 */
 	_onJsonActionLoaded: function(response, options) {
-		if(options.replaceTarget === true && options.target !== null) {
+		if (options.replaceTarget === true && options.target !== null) {
 			options.target.replaceWith(response.data.html);
 		}
-		else if(options.target !== null) {
+		else if (options.target !== null) {
 			options.target.html(response.data.html);
 		}
 		var controller = null;
-		if(typeof response.data.frontendData == 'object' && options.initController) {
+		if (typeof response.data.frontendData == 'object' && options.initController) {
 			setTimeout(function() {
 				controller = this._loadController(response.data.frontendData, options.parentController);
 			}.bind(this), 10);
 		}
-		if(typeof options.onComplete == 'function') {
+		if (typeof options.onComplete == 'function') {
 			options.onComplete(controller, response);
 		}
 	},
@@ -139,11 +139,11 @@ Frontend.App = Class.extend({
 	 *
 	 * @param mixed		url		Either a string url or a Router-compatible url object
 	 * @param Object	data	(optional)	POST data
-	 * @param Function	responseCallback	The function which will receive the response 
-	 * @return void 
+	 * @param Function	responseCallback	The function which will receive the response
+	 * @return void
 	 */
 	request: function(url, data, responseCallback) {
-		if(typeof url == 'object') {
+		if (typeof url == 'object') {
 			var url = this.Router.url(url);
 		}
 		var requestType = (data !== null) ? 'POST' : 'GET';
@@ -162,13 +162,13 @@ Frontend.App = Class.extend({
 			cache: false,
 			context: this,
 			success: function(response, textStatus, jqXHR) {
-				if(response == null) {
+				if (response == null) {
 					var response = {
 						code: 'error'
 					};
 				}
 				response.requestData = requestData;
-				if(typeof responseCallback == 'function') {
+				if (typeof responseCallback == 'function') {
 					responseCallback(response);
 				}
 			},
@@ -182,13 +182,13 @@ Frontend.App = Class.extend({
 						responseText: responseText
 					};
 				}
-				if(typeof responseCallback == 'function') {
+				if (typeof responseCallback == 'function') {
 					responseCallback(response);
 				}
 			}
 		};
 
-		if((window.FormData !== undefined) && (data instanceof FormData)) {
+		if ((window.FormData !== undefined) && (data instanceof FormData)) {
 			$.extend(ajaxData, {processData: false, contentType: false});
 		}
 
@@ -196,12 +196,12 @@ Frontend.App = Class.extend({
 	},
 	/**
 	 * Redirects the user to another page
-	 * 
+	 *
 	 * @param string|object url		Either the URL as a string or a router-compatible url.
-	 * @return void 
+	 * @return void
 	 */
 	redirect: function(url) {
-		if(typeof url == 'object') {
+		if (typeof url == 'object') {
 			url = this.Router.url(url);
 		}
 		window.location.replace(url);
@@ -218,17 +218,17 @@ Frontend.App = Class.extend({
 	/**
 	 * Proxy for PublishSubscribeBroker::publish()
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	publishEvent: function(topic, data) {
 		this._pubSubBroker.publish(topic, data);
 	},
 	/**
-	 * Inject an app-specific error handler, which will be used to delegate 
+	 * Inject an app-specific error handler, which will be used to delegate
 	 * the error handling to.
 	 *
 	 * @param Object	errorHandler	Must implement handleError(response)
-	 * @return void 
+	 * @return void
 	 */
 	registerErrorHandler: function(errorHandler) {
 		this._errorHandler = errorHandler;

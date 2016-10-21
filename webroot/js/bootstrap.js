@@ -1,4 +1,4 @@
-if(typeof window.appData == 'object' && Frontend) {
+if (typeof window.appData == 'object' && Frontend) {
 	window.App.Main = new Frontend.App(appData);
 
 	$(document).ready(function() {
@@ -6,7 +6,7 @@ if(typeof window.appData == 'object' && Frontend) {
 	});
 }
 else {
-	if(window.console) {
+	if (window.console) {
 		console.debug('FrontendBridge: Missing appData.');
 	}
 }

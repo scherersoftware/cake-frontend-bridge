@@ -16,7 +16,7 @@ Frontend.Router = Class.extend({
 	 * Class constructor
 	 *
 	 * @param	Object	the appData object
-	 * @return 	void 
+	 * @return 	void
 	 */
 	init: function(appData) {
 		this.webroot = appData.webroot;
@@ -27,11 +27,11 @@ Frontend.Router = Class.extend({
 	},
 	/**
 	 * Constructs an url based on the given parameters.
-	 * 
-	 * The method also accepts an object containing at least the controller 
+	 *
+	 * The method also accepts an object containing at least the controller
 	 * and action keys (see this.urlDefaults). Otherwise it takes
 	 * the function arguments.
-	 * 
+	 *
 	 * @param string	controller 	The controller name in lower case
 	 * @param string	action 		The controller action
 	 * @param Array		pass		An array containing the pass params (/arg1/arg2/)
@@ -39,7 +39,7 @@ Frontend.Router = Class.extend({
 	 * @return string				The generated URL
 	 */
 	url: function(controller, action, pass, query) {
-		if(typeof controller == 'object') {
+		if (typeof controller == 'object') {
 			var params = jQuery.extend({}, this.urlDefaults, controller);
 			var controller = params.controller;
 			var action = params.action;
@@ -48,22 +48,22 @@ Frontend.Router = Class.extend({
 			var query = params.query;
 			var plugin = params.plugin;
 		}
-		
-		if(plugin) {
+
+		if (plugin) {
 			plugin = plugin.toLowerCase() + '/';
 		} else {
 			plugin = '';
 		}
-		
+
 		var url = this.webroot + prefix + plugin + controller + '/' + action + '/';
 
-		if(pass instanceof Array) {
+		if (pass instanceof Array) {
 			$.each(pass, function (i, val) {
 				url += val + '/';
 			});
 		}
-		
-		if(typeof query == 'object') {
+
+		if (typeof query == 'object') {
 			url += '?' + http_build_query(query);
 		}
 		return url;
@@ -71,7 +71,7 @@ Frontend.Router = Class.extend({
 	/**
 	 * Returns the complete, current URL of the site.
 	 *
-	 * @return void 
+	 * @return void
 	 */
 	getCurrentUrl: function() {
 		return this.webroot + '/' + this.url;
