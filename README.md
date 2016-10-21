@@ -361,3 +361,4 @@ This example assumes a Table called `Users` with a field `username` in your data
 - **request**
 
 	Allows generating custom AJAX requests.
+	Also supports FormData (except IE <= 9) as request data.
