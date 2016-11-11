@@ -174,7 +174,17 @@ Frontend.App = Class.extend({
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 				var responseText = jqXHR.responseText;
-				var response = $.parseJSON(responseText);
+				var response = null;
+				try {
+					response = $.parseJSON(responseText);
+				} catch (exception) {
+					response = {
+						code: 'error',
+						exception: exception,
+						requestData: requestData,
+						responseText: responseText
+					};
+				}
 				if (typeof response != 'object') {
 					response = {
 						code: 'error',
