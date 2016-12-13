@@ -136,6 +136,9 @@ Frontend.Controller = Class.extend({
 			plugin: this._frontendData.request.plugin,
 			query: this._frontendData.request.query
 		};
+		if ($form.hasClass('dialog-ajax-form-use-form-action')) {
+			url = $form.attr('action');
+		}
 		$form.submit(function(e) {
 			e.preventDefault();
 			App.Main.UIBlocker.blockElement(this._dom);
