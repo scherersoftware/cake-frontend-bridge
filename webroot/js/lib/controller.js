@@ -34,13 +34,16 @@ Frontend.Controller = Class.extend({
 	 * @param	Controller	parentController	(optional) Parent controller instance.
 	 * @return	void
 	 */
-	init: function(frontendData, parentController) {
+	init: function(frontendData, parentController, instanceId) {
 		this.parentController = parentController;
 		this._frontendData = frontendData;
 		this.name = this._frontendData.request.controller;
 		this.action = this._frontendData.request.action;
 
 		var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action);
+        if (instanceId != undefined) {
+            selector += '[data-instance-id=' + instanceId + ']';
+        }
 		this._dom = $(selector);
 		this.$ = this._dom.find.bind(this._dom);
 

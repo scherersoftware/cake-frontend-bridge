@@ -38,16 +38,22 @@ Frontend.App = Class.extend({
 	 *
 	 * @returns void
 	 */
-	_loadController: function(frontendData, parentController) {
+	_loadController: function(frontendData, parentController, instanceId) {
 		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
 
 		if (frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
-			this._controllers[actionControllerName] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController);
+			if (this._controllers[actionControllerName] == undefined) {
+				this._controllers[actionControllerName] = [];
+			}
+			this._controllers[actionControllerName][this._controllers[actionControllerName].length] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController, instanceId);
 			controller = this._controllers[actionControllerName];
 		}
 		else if (window['App']['Controllers'][ actionControllerName ]) {
-			this._controllers[actionControllerName] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController);
+			if (this._controllers[actionControllerName] == undefined) {
+				this._controllers[actionControllerName] = [];
+			}
+			this._controllers[actionControllerName][this._controllers[actionControllerName].length] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController, instanceId);
 			controller = this._controllers[actionControllerName];
 		}
 		else {
@@ -125,8 +131,9 @@ Frontend.App = Class.extend({
 		}
 		var controller = null;
 		if (typeof response.data.frontendData == 'object' && options.initController) {
+            var instanceId = $(options.target).find('.controller').data('instance-id');
 			setTimeout(function() {
-				controller = this._loadController(response.data.frontendData, options.parentController);
+				controller = this._loadController(response.data.frontendData, options.parentController, instanceId);
 			}.bind(this), 10);
 		}
 		if (typeof options.onComplete == 'function') {
