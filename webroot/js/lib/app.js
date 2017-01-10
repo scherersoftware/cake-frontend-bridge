@@ -131,7 +131,7 @@ Frontend.App = Class.extend({
 		}
 		var controller = null;
 		if (typeof response.data.frontendData == 'object' && options.initController) {
-            var instanceId = $(options.target).find('.controller').data('instance-id');
+			var instanceId = $(response.data.html).data('instance-id');
 			setTimeout(function() {
 				controller = this._loadController(response.data.frontendData, options.parentController, instanceId);
 			}.bind(this), 10);
