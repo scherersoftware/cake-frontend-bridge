@@ -38,9 +38,13 @@ Frontend.App = Class.extend({
 	 *
 	 * @returns void
 	 */
-	_loadController: function(frontendData, parentController, instanceId) {
+	_loadController: function(frontendData, parentController, instanceId, removeControllerInstanceId) {
 		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
+
+		if (removeControllerInstanceId !== null && this._controllers[actionControllerName] !== undefined && this._controllers[actionControllerName][removeControllerInstanceId] !== undefined) {
+			delete this._controllers[actionControllerName][removeControllerInstanceId];
+		}
 
 		if (frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
 			if (this._controllers[actionControllerName] == undefined) {
@@ -129,11 +133,17 @@ Frontend.App = Class.extend({
 		else if (options.target !== null) {
 			options.target.html(response.data.html);
 		}
+
+		var removeControllerInstanceId = null;
+		if ($(options.target).data('instance-id') !== undefined) {
+			removeControllerInstanceId = $(options.target).data('instance-id');
+		}
+
 		var controller = null;
 		if (typeof response.data.frontendData == 'object' && options.initController) {
 			var instanceId = $(response.data.html).data('instance-id');
 			setTimeout(function() {
-				controller = this._loadController(response.data.frontendData, options.parentController, instanceId);
+				controller = this._loadController(response.data.frontendData, options.parentController, instanceId, removeControllerInstanceId);
 			}.bind(this), 10);
 		}
 		if (typeof options.onComplete == 'function') {
@@ -223,15 +233,23 @@ Frontend.App = Class.extend({
 		}
 		window.location.replace(url);
 	},
-	/**
-	 * Proxy for PublishSubscribeBroker::subscribe()
+    /**
+	 * Proxy for Unsubscribe from a topic.
 	 *
-	 * @return SubscriptionHandle	Containing topic and subscription id (used for unsubscribing)
+	 * @param obj	subscriptionHandle	Object containing the topic and the subscription id
+	 * @return void
 	 */
-	subscribeEvent: function(topic, handler, scope) {
-		this._pubSubBroker.subscribe(topic, handler, scope);
+	unsubscribeEvent: function(subscriptionHandle) {
+		return this._pubSubBroker.unsubscribe(subscriptionHandle);
 	},
-
+    /**
+     * Proxy for PublishSubscribeBroker::subscribe()
+     *
+     * @return SubscriptionHandle	Containing topic and subscription id (used for unsubscribing)
+     */
+    subscribeEvent: function(topic, handler, scope) {
+        return this._pubSubBroker.subscribe(topic, handler, scope);
+    },
 	/**
 	 * Proxy for PublishSubscribeBroker::publish()
 	 *
