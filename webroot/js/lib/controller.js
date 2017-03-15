@@ -43,6 +43,7 @@ Frontend.Controller = Class.extend({
 		var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action);
         if (instanceId != undefined) {
             selector += '[data-instance-id=' + instanceId + ']';
+            this.instanceId = instanceId;
         }
 		this._dom = $(selector);
 		this.$ = this._dom.find.bind(this._dom);

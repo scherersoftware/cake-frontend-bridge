@@ -42,23 +42,24 @@ Frontend.App = Class.extend({
 		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
 
-		if (removeControllerInstanceId !== null && this._controllers[actionControllerName] !== undefined && this._controllers[actionControllerName][removeControllerInstanceId] !== undefined) {
+		if (removeControllerInstanceId != null && this._controllers[actionControllerName] != undefined && this._controllers[actionControllerName][removeControllerInstanceId] != undefined) {
 			delete this._controllers[actionControllerName][removeControllerInstanceId];
+		}
+		if (this._controllers[actionControllerName] == undefined) {
+			this._controllers[actionControllerName] = [];
+		}
+		var key = this._controllers[actionControllerName].length;
+		if (instanceId != undefined) {
+			key = instanceId;
 		}
 
 		if (frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
-			if (this._controllers[actionControllerName] == undefined) {
-				this._controllers[actionControllerName] = [];
-			}
-			this._controllers[actionControllerName][this._controllers[actionControllerName].length] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController, instanceId);
-			controller = this._controllers[actionControllerName];
+			this._controllers[actionControllerName][key] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController, instanceId);
+			controller = this._controllers[actionControllerName][key];
 		}
 		else if (window['App']['Controllers'][ actionControllerName ]) {
-			if (this._controllers[actionControllerName] == undefined) {
-				this._controllers[actionControllerName] = [];
-			}
-			this._controllers[actionControllerName][this._controllers[actionControllerName].length] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController, instanceId);
-			controller = this._controllers[actionControllerName];
+			this._controllers[actionControllerName][key] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController, instanceId);
+			controller = this._controllers[actionControllerName][key];
 		}
 		else {
 			this._controllers[ 'AppController' ] = new Frontend.AppController(frontendData, parentController);
@@ -127,16 +128,12 @@ Frontend.App = Class.extend({
 	 * @return void
 	 */
 	_onJsonActionLoaded: function(response, options) {
+        var removeControllerInstanceId = $(options.target).find('.controller').data('instance-id');
 		if (options.replaceTarget === true && options.target !== null) {
 			options.target.replaceWith(response.data.html);
 		}
 		else if (options.target !== null) {
 			options.target.html(response.data.html);
-		}
-
-		var removeControllerInstanceId = null;
-		if ($(options.target).data('instance-id') !== undefined) {
-			removeControllerInstanceId = $(options.target).data('instance-id');
 		}
 
 		var controller = null;
