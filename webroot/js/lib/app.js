@@ -38,32 +38,25 @@ Frontend.App = Class.extend({
 	 *
 	 * @returns void
 	 */
-	_loadController: function(frontendData, parentController, instanceId, removeControllerInstanceId) {
+	_loadController: function(frontendData, parentController, instanceId) {
 		var actionControllerName = camelCase(frontendData.request.controller) + camelCase(frontendData.request.action) + 'Controller';
 		var controller = null;
 
-		if (removeControllerInstanceId != null && this._controllers[actionControllerName] != undefined && this._controllers[actionControllerName][removeControllerInstanceId] != undefined) {
-			delete this._controllers[actionControllerName][removeControllerInstanceId];
-		}
-		if (this._controllers[actionControllerName] == undefined) {
-			this._controllers[actionControllerName] = [];
-		}
-		var key = this._controllers[actionControllerName].length;
-		if (instanceId != undefined) {
-			key = instanceId;
-		}
+        if (instanceId === undefined) {
+            instanceId = $('div.controller.' + frontendData.request.controller + '-' + stringUnderscore(frontendData.request.action)).data('instance-id');
+        }
 
-		if (frontendData.request.plugin && window['App']['Controllers'][ frontendData.request.plugin ] && window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ]) {
-			this._controllers[actionControllerName][key] = new window['App']['Controllers'][ frontendData.request.plugin ][ actionControllerName ](frontendData, parentController, instanceId);
-			controller = this._controllers[actionControllerName][key];
+		if (frontendData.request.plugin && window['App']['Controllers'][frontendData.request.plugin] && window['App']['Controllers'][frontendData.request.plugin][actionControllerName]) {
+			this._controllers[instanceId] = new window['App']['Controllers'][frontendData.request.plugin][actionControllerName](frontendData, parentController, instanceId);
+			controller = this._controllers[instanceId];
 		}
-		else if (window['App']['Controllers'][ actionControllerName ]) {
-			this._controllers[actionControllerName][key] = new window['App']['Controllers'][ actionControllerName ](frontendData, parentController, instanceId);
-			controller = this._controllers[actionControllerName][key];
+		else if (window['App']['Controllers'][actionControllerName]) {
+			this._controllers[instanceId] = new window['App']['Controllers'][actionControllerName](frontendData, parentController, instanceId);
+			controller = this._controllers[instanceId];
 		}
 		else {
-			this._controllers[ 'AppController' ] = new Frontend.AppController(frontendData, parentController);
-			controller = this._controllers[ 'AppController' ];
+			this._controllers['AppController'] = new Frontend.AppController(frontendData, parentController, instanceId);
+			controller = this._controllers['AppController'];
 		}
 		return controller;
 	},
@@ -128,7 +121,9 @@ Frontend.App = Class.extend({
 	 * @return void
 	 */
 	_onJsonActionLoaded: function(response, options) {
-        var removeControllerInstanceId = $(options.target).find('.controller').data('instance-id');
+        if (options.target !== undefined) {
+            this.cleanControllerInstances(options.target);
+        }
 		if (options.replaceTarget === true && options.target !== null) {
 			options.target.replaceWith(response.data.html);
 		}
@@ -140,14 +135,33 @@ Frontend.App = Class.extend({
 		if (typeof response.data.frontendData == 'object' && options.initController) {
 			var instanceId = $(response.data.html).data('instance-id');
 			setTimeout(function() {
-				controller = this._loadController(response.data.frontendData, options.parentController, instanceId, removeControllerInstanceId);
+				controller = this._loadController(response.data.frontendData, options.parentController, instanceId);
 			}.bind(this), 10);
 		}
 		if (typeof options.onComplete == 'function') {
 			options.onComplete(controller, response);
 		}
 	},
-
+    /**
+	 * cleans controller instances by parsing passed element
+	 *
+	 * @param obj removedElement Element to be parsed
+	 * @return void
+	 */
+    cleanControllerInstances: function(removedElement) {
+        var $controllerElements = $(removedElement).find('div.controller');
+        if ($controllerElements.length == 0) {
+            return;
+        }
+        $controllerElements.each(function(index, controller) {
+            var instanceId = $(controller).data('instance-id');
+            if (typeof this._controllers[instanceId].beforeDelete == 'function') {
+                this._controllers[instanceId].beforeDelete();
+            }
+            App.Main._controllers[instanceId] = null;
+            delete App.Main._controllers[instanceId];
+        }.bind(this));
+    },
 	/**
 	 * Makes an AJAX request to the server and returns the results.
 	 *

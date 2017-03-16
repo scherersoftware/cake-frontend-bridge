@@ -7,6 +7,7 @@ use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
+use Cake\Utility\Text;
 use Cake\View\Helper;
 use Cake\View\View;
 
@@ -101,13 +102,37 @@ class FrontendBridgeHelper extends Helper {
  * Constructs the classes for the element that represents the frontend controller's DOM
  * reference.
  *
+ * @param array $additionalClasses optional classes to add
  * @return string
  */
-	public function getMainContentClasses() {
+	public function getMainContentClasses(array $additionalClasses = null) {
 		$classes = ['controller'];
+        if (!empty($additionalClasses)) {
+            $classes = Hash::merge($classes, $additionalClasses);
+        }
 		$classes[] = Inflector::underscore($this->_View->request->controller) . '-' . Inflector::underscore($this->_View->request->action);
 		return h(implode(' ', $classes));
 	}
+
+/**
+ * Provides the instance data attribute markup
+ *
+ * @return string
+ */
+	public function getInstanceIdDataAttribute() {
+		return 'data-instance-id="' . Text::uuid() . '"';
+	}
+
+/**
+ * Provides the instance data attribute add main content classes markup
+ *
+ * @param array $additionalClasses optional classes to add
+ * @return string
+ */
+    public function getControllerAttributes(array $additionalClasses = null)
+    {
+        return $this->getInstanceIdDataAttribute() . ' class="' . $this->getMainContentClasses($additionalClasses) . '"';
+    }
 
 /**
  * Returns a full list of the dependencies (used in console build task)

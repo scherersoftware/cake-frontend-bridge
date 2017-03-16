@@ -20,6 +20,7 @@ Frontend.Controller = Class.extend({
 	parentController: null,
 	name: null,
 	action: null,
+    instanceId: null,
 	/**
 	 * Holds the DOM element of this controller.
 	 *
@@ -39,12 +40,14 @@ Frontend.Controller = Class.extend({
 		this._frontendData = frontendData;
 		this.name = this._frontendData.request.controller;
 		this.action = this._frontendData.request.action;
+        this.instanceId = instanceId;
 
-		var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action);
-        if (instanceId != undefined) {
-            selector += '[data-instance-id=' + instanceId + ']';
-            this.instanceId = instanceId;
+        if (this.instanceId == undefined) {
+            console.error('No JS Controller instance passed');
         }
+
+		var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action) + '[data-instance-id=' + instanceId + ']';
+
 		this._dom = $(selector);
 		this.$ = this._dom.find.bind(this._dom);
 
@@ -172,7 +175,13 @@ Frontend.Controller = Class.extend({
 	 */
 	openDialog: function(url, onClose) {
 		this._dialog = new Frontend.Dialog({
-			onClose: onClose
+			onClose: function(dialogInstance) {
+                App.Main.cleanControllerInstances(dialogInstance.domElement);
+                if (typeof onClose === 'function') {
+                    onClose(dialogInstance);
+                }
+            },
+            appendToDomBeforeShow: false
 		});
 		this._dialog.blockUi();
 		App.Main.loadJsonAction(url, {
@@ -184,5 +193,10 @@ Frontend.Controller = Class.extend({
 				this._dialog.unblockUi();
 			}.bind(this)
 		});
-	}
+	},
+    /**
+     * Called after controller markup and before instance are deleted
+     * @return {void}
+     */
+    beforeDelete: function() {}
 });
