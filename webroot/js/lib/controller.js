@@ -173,27 +173,30 @@ Frontend.Controller = Class.extend({
 	 * TODO: make this more configurable
 	 * @return {void}
 	 */
-	openDialog: function(url, onClose) {
-		this._dialog = new Frontend.Dialog({
-			onClose: function(dialogInstance) {
+    openDialog: function(url, onClose, onCompleteCallback) {
+        this._dialog = new Frontend.Dialog({
+            onClose: function(dialogInstance) {
                 App.Main.cleanControllerInstances(dialogInstance.domElement);
                 if (typeof onClose === 'function') {
                     onClose(dialogInstance);
                 }
             },
             appendToDomBeforeShow: false
-		});
-		this._dialog.blockUi();
-		App.Main.loadJsonAction(url, {
-			parentController: this,
-			dialog: this._dialog,
-			target: this._dialog.getContent(),
-			onComplete: function() {
-				this._dialog.show();
-				this._dialog.unblockUi();
-			}.bind(this)
-		});
-	},
+        });
+        this._dialog.blockUi();
+        App.Main.loadJsonAction(url, {
+            parentController: this,
+            dialog: this._dialog,
+            target: this._dialog.getContent(),
+            onComplete: function() {
+                this._dialog.show();
+                this._dialog.unblockUi();
+                if (typeof onCompleteCallback == 'function') {
+                    onCompleteCallback();
+                }
+            }.bind(this)
+        });
+    },
     /**
      * Called after controller markup and before instance are deleted
      * @return {void}
