@@ -3,34 +3,34 @@
  *
  */
 if (!Function.prototype.bind) {
-	Function.prototype.bind = function(){
-		var fn = this, args = Array.prototype.slice.call(arguments),
-		object = args.shift();
-		return function(){
-			return fn.apply(object,
-				args.concat(Array.prototype.slice.call(arguments))
-			);
-		};
-	};
+    Function.prototype.bind = function(){
+        var fn = this, args = Array.prototype.slice.call(arguments),
+        object = args.shift();
+        return function(){
+            return fn.apply(object,
+                args.concat(Array.prototype.slice.call(arguments))
+            );
+        };
+    };
 }
 
 function ucfirst (str) {
-	// http://kevin.vanzonneveld.net
-	// +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-	// +   bugfixed by: Onno Marsman
-	// +   improved by: Brett Zamir (http://brett-zamir.me)
-	// *     example 1: ucfirst('kevin van zonneveld');
-	// *     returns 1: 'Kevin van zonneveld'
-	str += '';
-	var f = str.charAt(0).toUpperCase();
-	return f + str.substr(1);
+    // http://kevin.vanzonneveld.net
+    // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+    // +   bugfixed by: Onno Marsman
+    // +   improved by: Brett Zamir (http://brett-zamir.me)
+    // *     example 1: ucfirst('kevin van zonneveld');
+    // *     returns 1: 'Kevin van zonneveld'
+    str += '';
+    var f = str.charAt(0).toUpperCase();
+    return f + str.substr(1);
 }
 function stringUnderscore(str){
-	var res = str.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
-	if (res.substr(0, 1) == '_') {
-		res = res.substr(1);
-	}
-	return res;
+    var res = str.replace(/([A-Z])/g, function($1){return "_"+$1.toLowerCase();});
+    if (res.substr(0, 1) == '_') {
+        res = res.substr(1);
+    }
+    return res;
 }
 /**
  * Converts a string from string_with_underscores to StringWithUnderscores.
@@ -38,15 +38,15 @@ function stringUnderscore(str){
  * @return string
  */
 function camelCase(str) {
-	if (typeof str != 'string') {
-		return str;
-	}
-	var parts = str.split('_');
-	var res = '';
-	$.each(parts, function (index, part) {
-		res += ucfirst(part);
-	});
-	return res;
+    if (typeof str != 'string') {
+        return str;
+    }
+    var parts = str.split('_');
+    var res = '';
+    $.each(parts, function (index, part) {
+        res += ucfirst(part);
+    });
+    return res;
 }
 function trim (str, charlist) {
     // http://kevin.vanzonneveld.net
@@ -136,25 +136,25 @@ function count (mixed_var, mode) {
 }
 
 function getObjectKeys(obj) {
-	var keys = [];
-	for(var key in obj) {
-		keys.push(key);
-	}
-	return keys;
+    var keys = [];
+    for(var key in obj) {
+        keys.push(key);
+    }
+    return keys;
 }
 
 function getFormValues($form) {
-	var paramObj = {};
-	$.each($form.serializeArray(), function(_, kv) {
-		if (paramObj.hasOwnProperty(kv.name)) {
-			paramObj[kv.name] = $.makeArray(paramObj[kv.name]);
-			paramObj[kv.name].push(kv.value);
-		}
-		else {
-			paramObj[kv.name] = kv.value;
-		}
-	});
-	return paramObj;
+    var paramObj = {};
+    $.each($form.serializeArray(), function(_, kv) {
+        if (paramObj.hasOwnProperty(kv.name)) {
+            paramObj[kv.name] = $.makeArray(paramObj[kv.name]);
+            paramObj[kv.name].push(kv.value);
+        }
+        else {
+            paramObj[kv.name] = kv.value;
+        }
+    });
+    return paramObj;
 }
 
 /**
@@ -169,28 +169,28 @@ function getFormValues($form) {
  * Docs: http://www.openjs.com/scripts/others/dump_function_php_print_r.php
  */
 function dump(arr,level) {
-	var dumped_text = "";
-	if (!level) level = 0;
+    var dumped_text = "";
+    if (!level) level = 0;
 
-	//The padding given at the beginning of the line.
-	var level_padding = "";
-	for(var j=0;j<level+1;j++) level_padding += "    ";
+    //The padding given at the beginning of the line.
+    var level_padding = "";
+    for(var j=0;j<level+1;j++) level_padding += "    ";
 
-	if (typeof(arr) == 'object') { //Array/Hashes/Objects
-		for(var item in arr) {
-			var value = arr[item];
+    if (typeof(arr) == 'object') { //Array/Hashes/Objects
+        for(var item in arr) {
+            var value = arr[item];
 
-			if (typeof(value) == 'object') { //If it is an array,
-				dumped_text += level_padding + "'" + item + "' ...\n";
-				dumped_text += dump(value,level+1);
-			} else {
-				dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-			}
-		}
-	} else { //Stings/Chars/Numbers etc.
-		dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-	}
-	return dumped_text;
+            if (typeof(value) == 'object') { //If it is an array,
+                dumped_text += level_padding + "'" + item + "' ...\n";
+                dumped_text += dump(value,level+1);
+            } else {
+                dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+            }
+        }
+    } else { //Stings/Chars/Numbers etc.
+        dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+    }
+    return dumped_text;
 }
 
 function sortSelect($select) {
@@ -324,12 +324,12 @@ var guid = (function() {
 
 
 if (!window.console) {
-	var names = ["log", "debug", "info", "warn", "error",
-	"assert", "dir", "dirxml", "group",
-	"groupEnd", "time", "timeEnd", "count",
-	"trace", "profile", "profileEnd"];
+    var names = ["log", "debug", "info", "warn", "error",
+    "assert", "dir", "dirxml", "group",
+    "groupEnd", "time", "timeEnd", "count",
+    "trace", "profile", "profileEnd"];
 
-	window.console = {};
-	for (var i = 0; i < names.length; ++i)
-	window.console[names[i]] = function() {}
+    window.console = {};
+    for (var i = 0; i < names.length; ++i)
+    window.console[names[i]] = function() {}
 }
