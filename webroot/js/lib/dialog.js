@@ -2,9 +2,12 @@ Frontend.Dialog = Class.extend({
     /**
      * History keeper
      *
-     * @type array
+     * @type object
      */
-    _history: [],
+    _history: {
+        upcoming: null,
+        entries: []
+    },
 
     /**
      * Modal instance
@@ -46,10 +49,8 @@ Frontend.Dialog = Class.extend({
                     focus: true,
                     show: true
                 });
+                this._addHistory(url, requestOptions.preventHistory);
                 this._registerHandler();
-                if (!requestOptions.preventHistory) {
-                    this._addHistory(url);
-                }
 
                 App.Main.UIBlocker.unblockElement($('body'));
             }.bind(this)
@@ -96,11 +97,18 @@ Frontend.Dialog = Class.extend({
     /**
      * Add item to history
      *
-     * @param  object  url  Request URL in CakePHP style
+     * @param  object  url              Request URL in CakePHP style
+     * @param  bool    preventUpcoming  Prevent writing of a new upcoming entry
      * @return void
      */
-    _addHistory: function(url) {
-        this._history.push(url);
+    _addHistory: function(url, preventUpcoming) {
+        if (this._history.upcoming) {
+            this._history.entries.push(this._history.upcoming);
+        }
+        if (preventUpcoming) {
+            url = null;
+        }
+        this._history.upcoming = url;
     },
 
     /**
@@ -111,7 +119,10 @@ Frontend.Dialog = Class.extend({
     _registerHandler: function() {
         this._modal.on('hidden.bs.modal', function(e) {
             this._cleanupModal();
-            this._history = [];
+            this._history = {
+                upcoming: null,
+                entries: []
+            };
         }.bind(this));
 
         $(document).on('keyup', function(e) {
@@ -145,21 +156,21 @@ Frontend.Dialog = Class.extend({
             App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
 
-        if (this._history.length > 0) {
+        if (this._history.entries.length > 0) {
             $('.modal-back', this._modal).show();
         } else {
             $('.modal-back', this._modal).hide();
         }
 
         $('.modal-back', this._modal).off('click').on('click', function(e) {
-            if (this._history.length <= 0) {
+            if (this._history.entries.length <= 0) {
                 return;
             }
 
             this._cleanupModal();
 
             App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
-            var url = this._history.pop();
+            var url = this._history.entries.pop();
             this.loadDialog(url, {
                 preventHistory: true
             });
