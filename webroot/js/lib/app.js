@@ -4,6 +4,7 @@ Frontend.App = Class.extend({
     _pubSubBroker: null,
     PageController: null,
     _errorHandler: null,
+    Dialog: null,
     /**
      * Holds an instance of the router class
      *
@@ -21,6 +22,7 @@ Frontend.App = Class.extend({
         this._pubSubBroker = new Frontend.PublishSubscribeBroker();
         this.Router = new Frontend.Router(appData);
         this.UIBlocker = new Frontend.UIBlocker();
+        this.Dialog = new Frontend.Dialog();
     },
 
     /**
@@ -153,9 +155,10 @@ Frontend.App = Class.extend({
         if ($controllerElements.length == 0) {
             return;
         }
+
         $controllerElements.each(function(index, controller) {
             var instanceId = $(controller).data('instance-id');
-            if (typeof this._controllers[instanceId].beforeDelete == 'function') {
+            if (this._controllers[instanceId] && typeof this._controllers[instanceId].beforeDelete == 'function') {
                 this._controllers[instanceId].beforeDelete();
             }
             App.Main._controllers[instanceId] = null;

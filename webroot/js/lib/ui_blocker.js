@@ -20,7 +20,8 @@ Frontend.UIBlocker = Class.extend({
             cursor:               'wait',
             backgroundImage: 'url(/frontend_bridge/img/ajax_loader.gif)',
             backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat'
+            backgroundRepeat: 'no-repeat',
+            zIndex: 9999
         }
     },
     blockElement: function(element) {

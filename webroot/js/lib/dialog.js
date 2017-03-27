@@ -1,143 +1,181 @@
 Frontend.Dialog = Class.extend({
-    domElement: null,
-    options: null,
-    defaultMarkup: '<div class="modal-header">' + '    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' + '    <h4 class="modal-title"></h4>' + '</div>' + '<div class="modal-body">' + '</div>' + '<div class="modal-footer">' + '    <a href="#" class="btn btn-default" data-dismiss="modal">close</a>' + '</div>',
-    init: function(options) {
-        var defaultOptions = {
-            classes: ['dialog'],
-            title: null,
-            content: '',
-            closeButtonSelector: '.close-control',
-            addCloseButton: true,
-            appendToDomBeforeShow: true,
-            // Will be called after the close() action was triggered
-            onClose: null,
-            fade: true,
-            headerAndFooter: false,
-            closeOthersOnShow: true
-        };
+    /**
+     * History keeper
+     *
+     * @type array
+     */
+    _history: [],
 
-        this.options = defaultOptions;
-        this.options = jQuery.extend(this.options, options);
-        this.domElement = $('<div/>');
-        this.domElement.addClass('modal');
-        if (this.options.fade) {
-            this.domElement.addClass('fade');
+    /**
+     * Modal instance
+     *
+     * @type object
+     */
+    _modal: null,
+
+    /**
+     * Open dialog from action
+     *
+     * @param  object  url             Request URL in CakePHP style
+     * @param  object  requestOptions  Request options for loadJsonAction
+     * @return void
+     */
+    loadDialog: function(url, requestOptions) {
+        if (!this._checkForModalTemplate()) {
+            return false;
         }
 
-        for (var i in this.options.classes) {
-            this.domElement.addClass(this.options.classes[i]);
+        var requestOptions = jQuery.extend({}, requestOptions, {
+            initController: true,
+            replaceTarget: false,
+            onComplete: function(controller, response) {
+                // Error handling
+                if (!response.data.html) {
+                    return console.error('No response HTML available.');
+                }
+
+                // Initialize new dialog
+                this._modal = $('.modal');
+                this._setContent(response.data.html);
+                if (requestOptions.modalTitle) {
+                    this._setTitle(requestOptions.modalTitle);
+                }
+                this._modal.modal({
+                    backdrop: false,
+                    keyboard: true,
+                    focus: true,
+                    show: true
+                });
+                this._registerHandler();
+                if (!requestOptions.preventHistory) {
+                    this._addHistory(url);
+                }
+
+                App.Main.UIBlocker.unblockElement($('body'));
+            }.bind(this)
+        });
+        App.Main.UIBlocker.blockElement($('body'));
+        App.Main.loadJsonAction(url, requestOptions);
+    },
+
+    /**
+     * Set content of the modal
+     *
+     * @param  string  content  HTML Content
+     * @return void
+     */
+    _setContent: function(content) {
+        $('.modal-body', this._modal).html(content);
+    },
+
+    /**
+     * Set title to given string
+     *
+     * @param  string  title  Title string
+     * @return void
+     */
+    _setTitle: function(title) {
+        $('.modal-title', this._modal).html(title);
+    },
+
+    /**
+     * Modal existence checker
+     *
+     * @return bool
+     */
+    _checkForModalTemplate: function()
+    {
+        if (!$('.modal').length) {
+            console.error('You need to load the modal template through FrontendBrigeHelper::loadModalTemplate function into DOM.');
+            return false;
         }
 
-        var contentElement = $('<div/>');
-        contentElement.addClass('modal-content');
+        return true;
+    },
 
-        if (this.options.headerAndFooter) {
-            contentElement.html(this.defaultMarkup);
-            contentElement.find('.modal-body').html(this.options.content);
-            if (this.options.title) {
-                contentElement.find('.modal-header h4').html(this.options.title);
-            } else {
-                contentElement.find('.modal-header h4').remove();
+    /**
+     * Add item to history
+     *
+     * @param  object  url  Request URL in CakePHP style
+     * @return void
+     */
+    _addHistory: function(url) {
+        this._history.push(url);
+    },
+
+    /**
+     * Bind handlers and do conditional stuff.
+     *
+     * @return void
+     */
+    _registerHandler: function() {
+        this._modal.on('hidden.bs.modal', function(e) {
+            this._cleanupModal();
+        }.bind(this));
+
+        $(document).on('keyup', function(e) {
+            if (!this._modal) {
+                return;
             }
-        } else {
-            contentElement.html(this.options.content);
-        }
 
-        var dialogElement = $('<div class="modal-dialog"/>').html(contentElement);
-        this.domElement.append(dialogElement);
-
-        if (this.options.appendToDomBeforeShow) {
-            $('body').append(this.domElement);
-        }
-
-        this._addHandlers();
-    },
-    /**
-     * Set the dialog title
-     *
-     * @param {string} newTitle
-     */
-    setTitle: function(newTitle) {
-        this.domElement.find('div.title').html(newTitle);
-
-        this.options.title = newTitle;
-        return this;
-    },
-    /**
-     * The the dialog content.
-     *
-     * @param {string} newContent
-     */
-    setContent: function(newContent) {
-        this.getContent().html(newContent);
-        this._addHandlers();
-        return this;
-    },
-    /**
-     * Returns the DOM node which contains the dialog content.
-     *
-     * @return HTMLElement
-     */
-    getContent: function() {
-        return this.domElement.find('div.modal-content');
-    },
-    /**
-     * Create and show the dialog
-     */
-    show: function() {
-        if (this.options.appendToDomBeforeShow) {
-            if ($('.dialog').length > 0 && this.options.closeOthersOnShow) {
-                $('.dialog').remove();
+            // Escape key
+            if (e.keyCode === 27) {
+                this._modal.modal('hide');
             }
-            $('body').append(this.domElement);
-        } else {
+        }.bind(this));
 
+        $('.close, .close-btn', this._modal).off('click').on('click', function(e) {
+            e.preventDefault();
+            this._modal.modal('hide');
+        }.bind(this));
+
+        $('form', this._modal).off('submit').on('submit', function(e) {
+            e.preventDefault();
+
+            this._cleanupModal();
+            App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
+
+            var url = $(e.currentTarget).attr('action');
+            var formData = $(e.currentTarget).serialize();
+
+            this.loadDialog(url, {
+                data: formData
+            });
+            App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
+        }.bind(this));
+
+        if (this._history.length > 0) {
+            $('.modal-back', this._modal).show();
+        } else {
+            $('.modal-back', this._modal).hide();
         }
 
-        this.domElement.modal();
-        this.domElement.on('hidden.bs.modal', function() {
-            return this._close();
+        $('.modal-back', this._modal).off('click').on('click', function(e) {
+            if (this._history.length <= 0) {
+                return;
+            }
+
+            this._cleanupModal();
+
+            App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
+            var url = this._history.pop();
+            this.loadDialog(url, {
+                preventHistory: true
+            });
+            App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
     },
-    /**
-     * Add event handlers
-     */
-    _addHandlers: function() {
 
-    },
-    _close: function() {
-        if (typeof this.options.onClose == 'function') {
-            this.options.onClose(this);
+    /**
+     * Removes controller instance from instance keeper.
+     *
+     * @return void
+     */
+    _cleanupModal: function() {
+        if (!this._modal) {
+            return;
         }
-        this.domElement.remove();
-    },
-    close: function() {
-        this.domElement.modal('hide');
-    },
-    blockUi: function() {
-        this.domElement.addClass('loading');
-        // backup the stupid css defaults for restoring them later
-        var backupDefaults = $.blockUI.defaults.css;
-        $.blockUI.defaults.css = {};
-        this.domElement.block({
-            fadeIn: 50,
-            fadeOut: 50,
-            message: '&nbsp;', // blockElement won't display with an empty message.
-            overlayCSS: {
-                backgroundColor: '#fff',
-                opacity: 0.6,
-                cursor: 'wait',
-                backgroundImage: 'url(/frontend_bridge/img/ajax_loader.gif)',
-                backgroundPosition: 'center center',
-                backgroundRepeat: 'no-repeat'
-            }
-        });
-        // restore the defaults.
-        $.blockUI.defaults.css = backupDefaults;
-    },
-    unblockUi: function() {
-        this.domElement.removeClass('loading');
-        this.domElement.unblock();
+
+        App.Main.cleanControllerInstances(this._modal);
     }
 });
