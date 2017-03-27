@@ -28,7 +28,7 @@ Frontend.Dialog = Class.extend({
             return false;
         }
 
-        var requestOptions = jQuery.extend({}, requestOptions, {
+        var config = jQuery.extend({}, requestOptions, {
             initController: true,
             replaceTarget: false,
             onComplete: function(controller, response) {
@@ -39,24 +39,39 @@ Frontend.Dialog = Class.extend({
 
                 // Initialize new dialog
                 this._modal = $('.modal');
+                // Content and title setting
                 this._setContent(response.data.html);
                 if (requestOptions.modalTitle) {
                     this._setTitle(requestOptions.modalTitle);
                 }
+                // Large modal option
+                if (requestOptions.largeModal) {
+                    $('.modal-dialog', this._modal).addClass('modal-lg');
+                } else {
+                    $('.modal-dialog', this._modal).removeClass('modal-lg');
+                }
+
+                // Modal Initialize
                 this._modal.modal({
                     backdrop: false,
                     keyboard: true,
                     focus: true,
                     show: true
                 });
+
+                // History and events
                 this._addHistory(url, requestOptions.preventHistory);
                 this._registerHandler();
+
+                if (requestOptions.onComplete && typeof requestOptions.onComplete === 'function') {
+                    requestOptions.onComplete(controller, response);
+                }
 
                 App.Main.UIBlocker.unblockElement($('body'));
             }.bind(this)
         });
         App.Main.UIBlocker.blockElement($('body'));
-        App.Main.loadJsonAction(url, requestOptions);
+        App.Main.loadJsonAction(url, config);
     },
 
     /**
