@@ -111,6 +111,7 @@ Frontend.Dialog = Class.extend({
     _registerHandler: function() {
         this._modal.on('hidden.bs.modal', function(e) {
             this._cleanupModal();
+            this._history = [];
         }.bind(this));
 
         $(document).on('keyup', function(e) {

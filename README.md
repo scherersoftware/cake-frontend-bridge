@@ -85,7 +85,7 @@ In development add ```$this->FrontendBridge->addAllControllers();``` into the if
 
 #### 7. Add Main Content Classes
 
-Inside your `Layout\default.ctp` add the following line. Inside the div should be your content. 
+Inside your `Layout\default.ctp` add the following line. Inside the div should be your content.
 
 ```
 <div class="<?= $this->FrontendBridge->getMainContentClasses() ?>">
@@ -220,11 +220,11 @@ Use the following basic setup to use a modal view element as an edit form that p
 		this.$('.modal-form').on('click', function(e) {
 			// callback function when Listener is triggered
 	        e.preventDefault();
-	        this.openDialog($(e.currentTarget).attr('href') + '?json_action=1', function() {
-	            App.Main.UIBlocker.blockElement($('body'));
-	            window.location.reload();
-	        }.bind(this));
-	    }.bind(this));
+	        App.Main.Dialog.loadDialog($(e.currentTarget).attr('href'), {
+                modalTitle: 'Modal title',
+                preventHistory: false
+            });
+	    });
 	}
 	```
 
