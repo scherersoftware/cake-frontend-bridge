@@ -143,6 +143,9 @@ Frontend.App = Class.extend({
         if (typeof options.onComplete == 'function') {
             options.onComplete(controller, response);
         }
+        if (options.data && options.data.redirect) {
+            window.location.redirect(options.data.redirect);
+        }
     },
     /**
      * cleans controller instances by parsing passed element
