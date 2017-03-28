@@ -160,12 +160,12 @@ class FrontendBridgeComponent extends Component {
                 'plugin' => $this->_controller->request->plugin,
                 'controller' => Inflector::underscore($this->_controller->name),
                 'action' => $this->_controller->request->action
-            ),
-            'closeDialog' => $this->_closeDialog
+            )
         );
 
         // merge in the additional frontend data
         $appData = Hash::merge($appData, $this->_additionalAppData);
         $this->_controller->set('frontendData', $appData);
+        $this->_controller->set('closeDialog', $this->_closeDialog);
     }
 }

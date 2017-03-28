@@ -73,7 +73,7 @@ Frontend.Dialog = Class.extend({
 
                 App.Main.UIBlocker.unblockElement($('body'));
 
-                if (response.data.frontendData.closeDialog) {
+                if (response.data.closeDialog) {
                     this._modal.modal('hide');
                 }
             }.bind(this)
