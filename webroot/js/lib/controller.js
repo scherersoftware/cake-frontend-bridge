@@ -51,10 +51,6 @@ Frontend.Controller = Class.extend({
         this._dom = $(selector);
         this.$ = this._dom.find.bind(this._dom);
 
-        this._dom.find('.dialog-ajax-form').each(function(i, el) {
-            this._ajaxDialogFormSetup($(el));
-        }.bind(this));
-
         this.__initComponents();
         this._initialize();
     },
