@@ -34,18 +34,18 @@ Frontend.Dialog = Class.extend({
             onComplete: function(controller, response) {
                 // Error handling
                 if (!response.data.html) {
-                    return console.error('No response HTML available.');
+                    return window.location.reload();
                 }
 
                 // Initialize new dialog
                 this._modal = $('.modal');
                 // Content and title setting
                 this._setContent(response.data.html);
-                if (requestOptions.modalTitle) {
-                    this._setTitle(requestOptions.modalTitle);
+                if (config.modalTitle) {
+                    this._setTitle(config.modalTitle);
                 }
                 // Large modal option
-                if (requestOptions.largeModal) {
+                if (config.largeModal) {
                     $('.modal-dialog', this._modal).addClass('modal-lg');
                 } else {
                     $('.modal-dialog', this._modal).removeClass('modal-lg');
@@ -60,11 +60,11 @@ Frontend.Dialog = Class.extend({
                 });
 
                 // History and events
-                this._addHistory(url, requestOptions.preventHistory);
+                this._addHistory(url, config.preventHistory);
                 this._registerHandler();
 
-                if (requestOptions.onComplete && typeof requestOptions.onComplete === 'function') {
-                    requestOptions.onComplete(controller, response);
+                if (config.onLoadComplete && typeof config.onLoadComplete === 'function') {
+                    config.onLoadComplete(controller, response);
                 }
 
                 App.Main.UIBlocker.unblockElement($('body'));
