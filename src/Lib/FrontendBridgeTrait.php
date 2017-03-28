@@ -19,7 +19,8 @@ trait FrontendBridgeTrait
             'code' => 'success',
             'data' => [
                 'frontendData' => $frontendData,
-                'html' => $response->body()
+                'html' => $response->body(),
+                'closeDialog' => $this->viewVars['closeDialog']
             ]
         ];
         return new \FrontendBridge\Lib\ServiceResponse($response);
