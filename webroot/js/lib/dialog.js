@@ -32,9 +32,13 @@ Frontend.Dialog = Class.extend({
             initController: true,
             replaceTarget: false,
             onComplete: function(controller, response) {
+                if (response.data.redirect) {
+                    window.location = response.data.redirect;
+                    return
+                }
                 // Error handling
                 if (!response.data.html) {
-                    return window.location.reload();
+                    return console.error('No response HTML available.');
                 }
 
                 // Initialize new dialog
@@ -68,6 +72,10 @@ Frontend.Dialog = Class.extend({
                 }
 
                 App.Main.UIBlocker.unblockElement($('body'));
+
+                if (response.data.frontendData.closeDialog) {
+                    this._modal.modal('hide');
+                }
             }.bind(this)
         });
         App.Main.UIBlocker.blockElement($('body'));

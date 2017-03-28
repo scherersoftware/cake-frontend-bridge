@@ -47,6 +47,25 @@ trait FrontendBridgeTrait
         return $this->jsonActionResponse($response);
     }
 
+
+    /**
+     * Json action redirect
+     *
+     * @param  string  $url  URL
+     * @return \FrontendBridge\Lib\ServiceResponse
+     */
+    protected function jsonActionRedirect($url)
+    {
+        $response = [
+            'code' => 'success',
+            'data' => [
+                'redirect' => $url
+            ]
+        ];
+
+        return new \FrontendBridge\Lib\ServiceResponse($response);
+    }
+
     /**
      * Detect if the current request should be rendered as a JSON Action
      *

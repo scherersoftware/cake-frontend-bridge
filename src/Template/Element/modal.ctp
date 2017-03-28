@@ -8,6 +8,9 @@
                     <span >&times;</span>
                 </button>
             </div>
+            <?php if (!empty($this->Flash)): ?>
+                <?= $this->Flash->render() ?>
+            <?php endif; ?>
             <div class="modal-body"></div>
         </div>
     </div>
