@@ -57,7 +57,7 @@ Frontend.Dialog = Class.extend({
 
                 // Modal Initialize
                 this._modal.modal({
-                    backdrop: false,
+                    backdrop: true,
                     keyboard: true,
                     focus: true,
                     show: true
@@ -79,7 +79,7 @@ Frontend.Dialog = Class.extend({
             }.bind(this)
         });
         App.Main.UIBlocker.blockElement($('body'));
-        App.Main.loadJsonAction(url, config);
+        App.Main.loadJsonAction(this._ensureJsonAction(url), config);
     },
 
     /**
@@ -199,6 +199,31 @@ Frontend.Dialog = Class.extend({
             });
             App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
+    },
+
+    /**
+     * Ensure addition of json_action=1 at a url which is no cakephp conform array.
+     *
+     * @param   mixed  url  URL to check for
+     * @return  mixed
+     */
+    _ensureJsonAction: function(url) {
+        if (typeof url !== 'string') {
+            return url;
+        }
+
+        if (url.indexOf('json_action=1') !== -1) {
+            return url;
+        }
+
+        if (url.indexOf('?') !== -1) {
+            url += '&';
+        } else {
+            url += '?';
+        }
+        url += 'json_action=1';
+
+        return url;
     },
 
     /**
