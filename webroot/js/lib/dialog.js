@@ -125,12 +125,13 @@ Frontend.Dialog = Class.extend({
      * @return void
      */
     _addHistory: function(url, preventUpcoming) {
-        if (this._history.upcoming) {
+        if (this._history.upcoming && !preventUpcoming) {
             this._history.entries.push(this._history.upcoming);
         }
-        if (preventUpcoming) {
+        if (preventUpcoming && this._history.entries.length > 0) {
             url = null;
         }
+
         this._history.upcoming = url;
     },
 
