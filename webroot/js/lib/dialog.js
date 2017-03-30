@@ -159,7 +159,7 @@ Frontend.Dialog = Class.extend({
             }
         }.bind(this));
 
-        $('.close, .close-btn', this._modal).off('click').on('click', function(e) {
+        $('.close, .close-btn, .cancel-button', this._modal).off('click').on('click', function(e) {
             e.preventDefault();
             this._modal.modal('hide');
         }.bind(this));
