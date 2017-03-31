@@ -43,16 +43,24 @@ Frontend.Dialog = Class.extend({
 
                 // Initialize new dialog
                 this._modal = $('.modal');
-                // Content and title setting
+                // Content setter
                 this._setContent(response.data.html);
-                if (config.modalTitle) {
+
+                // Title setter
+                if (typeof config.modalTitle !== 'undefined') {
                     this._setTitle(config.modalTitle);
                 }
+
+                selectedTab = null;
+                // Tab selector
+                if (config.selectTab) {
+                    $(config.selectTab).tab('show');
+                    selectedTab = config.selectTab;
+                }
+
                 // Large modal option
                 if (config.largeModal) {
                     $('.modal-dialog', this._modal).addClass('modal-lg');
-                } else {
-                    $('.modal-dialog', this._modal).removeClass('modal-lg');
                 }
 
                 // Modal Initialize
@@ -64,7 +72,7 @@ Frontend.Dialog = Class.extend({
                 });
 
                 // History and events
-                this._addHistory(url, config.preventHistory);
+                this._addHistory(url, config.preventHistory, selectedTab);
                 this._registerHandler();
 
                 if (config.onLoadComplete && typeof config.onLoadComplete === 'function') {
@@ -122,9 +130,10 @@ Frontend.Dialog = Class.extend({
      *
      * @param  object  url              Request URL in CakePHP style
      * @param  bool    preventUpcoming  Prevent writing of a new upcoming entry
+     * @param  string  selectedTab      Selected tab
      * @return void
      */
-    _addHistory: function(url, preventUpcoming) {
+    _addHistory: function(url, preventUpcoming, selectedTab) {
         if (this._history.upcoming && !preventUpcoming) {
             this._history.entries.push(this._history.upcoming);
         }
@@ -132,6 +141,13 @@ Frontend.Dialog = Class.extend({
             url = null;
         }
 
+        if (url) {
+            url = {
+                url: url,
+                title: $('.modal-title', this._modal).html(),
+                selectedTab: selectedTab
+            };
+        }
         this._history.upcoming = url;
     },
 
@@ -147,6 +163,7 @@ Frontend.Dialog = Class.extend({
                 upcoming: null,
                 entries: []
             };
+            $('.modal-dialog', this._modal).removeClass('modal-lg');
         }.bind(this));
 
         $(document).on('keyup', function(e) {
@@ -195,11 +212,21 @@ Frontend.Dialog = Class.extend({
 
             App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
             var url = this._history.entries.pop();
-            this.loadDialog(url, {
-                preventHistory: true
+            this.loadDialog(url.url, {
+                preventHistory: true,
+                modalTitle: url.title,
+                selectTab: url.selectedTab
             });
             App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
+
+        $('a[data-toggle="tab"]', this._modal).on('shown.bs.tab', function (e) {
+            // Update tab in history
+            console.log()
+            if (typeof $(e.target).attr('class') === 'string' && this._history.upcoming) {
+                this._history.upcoming.selectedTab = '.' + $(e.target).attr('class');
+            }
+        }.bind(this))
     },
 
     /**
