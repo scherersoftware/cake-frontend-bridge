@@ -220,9 +220,8 @@ Frontend.Dialog = Class.extend({
             App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
 
-        $('a[data-toggle="tab"]', this._modal).on('shown.bs.tab', function (e) {
+        $('.nav-tabs.historized a[data-toggle="tab"]', this._modal).on('shown.bs.tab', function (e) {
             // Update tab in history
-            console.log()
             if (typeof $(e.target).attr('class') === 'string' && this._history.upcoming) {
                 this._history.upcoming.selectedTab = '.' + $(e.target).attr('class');
             }
