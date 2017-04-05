@@ -51,8 +51,36 @@ Frontend.Controller = Class.extend({
         this._dom = $(selector);
         this.$ = this._dom.find.bind(this._dom);
 
+        App.Main.initSubControllers(this, this._frontendData);
+
         this.__initComponents();
         this._initialize();
+    },
+    /**
+     * self ajax reloads a (sub)controller
+     *
+     * @param array    data        post-data
+     * @param array    pass        further url params
+     * @return void
+     */
+    ajaxSubmit: function(data, pass) {
+        $renderTarget = this._dom;
+        var url = {
+            controller: this.name.replace(/_/g,'-'),
+            action: this.action.replace(/_/g,'-'),
+        }
+        var options = {
+            target: $renderTarget,
+            replaceTarget: true
+        }
+        if (pass !== undefined) {
+            url.pass = pass
+        }
+        if (data !== undefined) {
+            options.data = data
+        }
+        App.Main.UIBlocker.blockElement(this._dom);
+        App.Main.loadJsonAction(url, options);
     },
     /**
      * Returns the contents of a view var, otherwise null

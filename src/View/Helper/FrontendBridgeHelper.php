@@ -99,6 +99,20 @@ class FrontendBridgeHelper extends Helper {
     }
 
     /**
+     * Renders a subcontroller element which gets an js controller instance assigned
+     *
+     * @return string
+     */
+    public function subControllerElement($url, array $data = [], array $options = [])
+    {
+        $name = '../' . $url['controller'] . '/' . Inflector::underscore($url['action']);
+        $markup = '<div class="controller subcontroller ' . Inflector::underscore($url['controller']) . '-' . Inflector::underscore($url['action']) . '" data-controller="' . $url['controller'] . '" data-action="' . $url['action'] . '" ' . $this->getInstanceIdDataAttribute() . '>';
+        $markup .= $this->_View->element($name, $data, $options);
+        $markup .= '</div>';
+        return $markup;
+    }
+
+    /**
      * Constructs the classes for the element that represents the frontend controller's DOM
      * reference.
      *
