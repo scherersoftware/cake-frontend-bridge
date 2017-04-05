@@ -192,7 +192,8 @@ Frontend.Dialog = Class.extend({
             var formData = $(e.currentTarget).serialize();
 
             this.loadDialog(url, {
-                data: formData
+                data: formData,
+                preventHistory: true
             });
             App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
         }.bind(this));
