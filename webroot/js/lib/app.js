@@ -66,7 +66,7 @@ Frontend.App = Class.extend({
         var controller = null;
 
         if (instanceId === undefined) {
-            instanceId = $('div.controller.' + frontendData.request.controller + '-' + stringUnderscore(frontendData.request.action)).data('instance-id');
+            instanceId = $('.controller.' + frontendData.request.controller + '-' + stringUnderscore(frontendData.request.action)).data('instance-id');
         }
 
         if (frontendData.request.plugin && window['App']['Controllers'][frontendData.request.plugin] && window['App']['Controllers'][frontendData.request.plugin][actionControllerName]) {
@@ -175,7 +175,7 @@ Frontend.App = Class.extend({
       * @return void
       */
      cleanControllerInstances: function(removedElement) {
-         var $controllerElements = $(removedElement).find('div.controller');
+         var $controllerElements = $(removedElement).find('.controller');
          if ($controllerElements.length == 0) {
              $controllerElements.each(function(index, controller) {
                  var instanceId = $(controller).data('instance-id');

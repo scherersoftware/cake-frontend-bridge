@@ -46,7 +46,7 @@ Frontend.Controller = Class.extend({
             console.error('No JS Controller instance passed');
         }
 
-        var selector = 'div.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action) + '[data-instance-id=' + instanceId + ']';
+        var selector = '.controller.' + this._frontendData.request.controller + '-' + stringUnderscore(this._frontendData.request.action) + '[data-instance-id=' + instanceId + ']';
 
         this._dom = $(selector);
         this.$ = this._dom.find.bind(this._dom);
