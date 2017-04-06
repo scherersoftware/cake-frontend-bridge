@@ -88,7 +88,11 @@ class FrontendBridgeHelper extends Helper {
             $parts = explode('/', $dependency);
             if (empty($parts[0]) && in_array($parts[1], $plugins)) {
                 $prefix = '/' . $parts[1] . '/';
-                $dependency = preg_replace('/^' . str_replace('/', '\/', $prefix) . '/', 'plugin:' . Inflector::camelize($parts[1]) . ':', $dependency);
+                $dependency = preg_replace(
+                    '/^' . str_replace('/', '\/', $prefix) . '/',
+                    'plugin:' . Inflector::camelize($parts[1]) . ':',
+                    $dependency
+                );
             }
             if (substr($dependency, 0, 4) == '/js/') {
                 $dependency = substr($dependency, 4);
@@ -105,10 +109,17 @@ class FrontendBridgeHelper extends Helper {
      */
     public function subControllerElement($url, array $data = [], array $options = [])
     {
+        $options = Hash::merge([
+            'htmlElement' => 'div'
+        ], $options);
+
         $name = '../' . $url['controller'] . '/' . Inflector::underscore($url['action']);
-        $markup = '<div class="controller subcontroller ' . Inflector::underscore($url['controller']) . '-' . Inflector::underscore($url['action']) . '" data-controller="' . $url['controller'] . '" data-action="' . $url['action'] . '" ' . $this->getInstanceIdDataAttribute() . '>';
+        $markup = '<' . $options['htmlElement'] . ' class="controller subcontroller ';
+        $markup .= Inflector::underscore($url['controller']) . '-' . Inflector::underscore($url['action']);
+        $markup .= '" data-controller="' . $url['controller'] . '" data-action="' . $url['action'] . '" ';
+        $markup .= $this->getInstanceIdDataAttribute() . '>';
         $markup .= $this->_View->element($name, $data, $options);
-        $markup .= '</div>';
+        $markup .= '</' . $options['htmlElement'] . '>';
         return $markup;
     }
 
