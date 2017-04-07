@@ -17,6 +17,13 @@ Frontend.Dialog = Class.extend({
     _modal: null,
 
     /**
+     * Indicator if modal is currently open
+     *
+     * @type bool
+     */
+    _modalOpen: false,
+
+    /**
      * Open dialog from action
      *
      * @param  object  url             Request URL in CakePHP style
@@ -79,15 +86,30 @@ Frontend.Dialog = Class.extend({
                     config.onLoadComplete(controller, response);
                 }
 
-                App.Main.UIBlocker.unblockElement($('body'));
+                App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
 
                 if (response.data.closeDialog) {
                     this._modal.modal('hide');
                 }
             }.bind(this)
         });
-        App.Main.UIBlocker.blockElement($('body'));
+
+        App.Main.UIBlocker.blockElement($(this._getBlockElement()));
         App.Main.loadJsonAction(this._ensureJsonAction(url), config);
+    },
+
+    /**
+     * Determine which element to block the ui for
+     *
+     * @return string
+     */
+    _getBlockElement: function() {
+        var blockElement = 'body';
+        if (this._modalOpen) {
+            blockElement = '.modal-dialog';
+        }
+
+        return blockElement;
     },
 
     /**
@@ -164,7 +186,13 @@ Frontend.Dialog = Class.extend({
                 entries: []
             };
             $('.modal-dialog', this._modal).removeClass('modal-lg');
+            this._modalOpen = false;
         }.bind(this));
+
+        this._modal.on('shown.bs.modal', function () {
+            this._modalOpen = true;
+        }.bind(this));
+
 
         $(document).on('keyup', function(e) {
             if (!this._modal) {
@@ -186,8 +214,7 @@ Frontend.Dialog = Class.extend({
             e.preventDefault();
 
             this._cleanupModal();
-            App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
-
+            App.Main.UIBlocker.blockElement($(this._getBlockElement()));
             var url = $(e.currentTarget).attr('action');
             var formData = $(e.currentTarget).serialize();
 
@@ -195,7 +222,7 @@ Frontend.Dialog = Class.extend({
                 data: formData,
                 preventHistory: true
             });
-            App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
+            App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
         }.bind(this));
 
         if (this._history.entries.length > 0) {
@@ -211,14 +238,14 @@ Frontend.Dialog = Class.extend({
 
             this._cleanupModal();
 
-            App.Main.UIBlocker.blockElement('.modal-dialog', this._modal);
+            App.Main.UIBlocker.blockElement($(this._getBlockElement()));
             var url = this._history.entries.pop();
             this.loadDialog(url.url, {
                 preventHistory: true,
                 modalTitle: url.title,
                 selectTab: url.selectedTab
             });
-            App.Main.UIBlocker.unblockElement('.modal-dialog', this._modal);
+            App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
         }.bind(this));
 
         $('.nav-tabs.historized a[data-toggle="tab"]', this._modal).on('shown.bs.tab', function (e) {
