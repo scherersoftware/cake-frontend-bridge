@@ -88,7 +88,7 @@ In development add ```$this->FrontendBridge->addAllControllers();``` into the if
 Inside your `Layout\default.ctp` add the following line. Inside the div should be your content.
 
 ```
-<div class="<?= $this->FrontendBridge->getMainContentClasses() ?>">
+<div <?= $this->FrontendBridge->getControllerAttributes(['some', 'optional', 'css', 'classes']) ?>>
     ...
     <?= $this->fetch('content') ?>
     ...
