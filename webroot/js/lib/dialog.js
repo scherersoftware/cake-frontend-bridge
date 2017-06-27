@@ -40,7 +40,12 @@ Frontend.Dialog = Class.extend({
             replaceTarget: false,
             onComplete: function(controller, response) {
                 if (response.data.redirect) {
-                    window.location = response.data.redirect;
+                    var redirectUrl = response.data.redirect;
+                    if (typeof redirectUrl === 'object') {
+                        redirectUrl = App.Main.Router.url(url);
+                    }
+
+                    window.location = redirectUrl;
                     return
                 }
                 // Error handling
@@ -52,11 +57,6 @@ Frontend.Dialog = Class.extend({
                 this._modal = $('.modal');
                 // Content setter
                 this._setContent(response.data.html);
-
-                // Title setter
-                if (typeof config.modalTitle !== 'undefined') {
-                    this._setTitle(config.modalTitle);
-                }
 
                 selectedTab = null;
                 // Tab selector
@@ -89,13 +89,13 @@ Frontend.Dialog = Class.extend({
                 App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
 
                 if (response.data.closeDialog) {
-                    this._modal.modal('hide');
+                    this._cleanupModal();
                 }
             }.bind(this)
         });
 
         App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-        App.Main.loadJsonAction(this._ensureJsonAction(url), config);
+        App.Main.loadJsonAction(this._ensureDialogAction(url), config);
     },
 
     /**
@@ -119,17 +119,7 @@ Frontend.Dialog = Class.extend({
      * @return void
      */
     _setContent: function(content) {
-        $('.modal-body', this._modal).html(content);
-    },
-
-    /**
-     * Set title to given string
-     *
-     * @param  string  title  Title string
-     * @return void
-     */
-    _setTitle: function(title) {
-        $('.modal-title', this._modal).html(title);
+        this._modal.html(content);
     },
 
     /**
@@ -205,7 +195,7 @@ Frontend.Dialog = Class.extend({
             }
         }.bind(this));
 
-        $('.close, .close-btn, .cancel-button', this._modal).off('click').on('click', function(e) {
+        $('.modal-header .close, .modal-header .close-btn, .modal-footer .cancel-button', this._modal).off('click').on('click', function(e) {
             e.preventDefault();
             this._modal.modal('hide');
         }.bind(this));
@@ -262,7 +252,7 @@ Frontend.Dialog = Class.extend({
      * @param   mixed  url  URL to check for
      * @return  mixed
      */
-    _ensureJsonAction: function(url) {
+    _ensureDialogAction: function(url) {
         if (typeof url !== 'string') {
             return url;
         }
@@ -276,7 +266,7 @@ Frontend.Dialog = Class.extend({
         } else {
             url += '?';
         }
-        url += 'json_action=1';
+        url += 'json_action=1&dialog_action=1';
 
         return url;
     },
