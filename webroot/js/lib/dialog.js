@@ -259,6 +259,18 @@ Frontend.Dialog = Class.extend({
      * @return  mixed
      */
     _ensureDialogAction: function(url) {
+        if (typeof url === 'object') {
+            if (url.hasOwnProperty('query')) {
+                url.query.dialog_action = 1;
+            } else {
+                url.query = {
+                    dialog_action: 1
+                }
+            }
+
+            return url;
+        }
+        
         if (typeof url !== 'string') {
             return url;
         }
