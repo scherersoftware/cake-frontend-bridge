@@ -206,7 +206,7 @@ Frontend.Dialog = Class.extend({
             this._cleanupModal();
             App.Main.UIBlocker.blockElement($(this._getBlockElement()));
             var url = $(e.currentTarget).attr('action');
-            
+
             var formData = null;
             if (!!window.FormData) {
                 formData = new FormData(e.currentTarget);
@@ -253,7 +253,7 @@ Frontend.Dialog = Class.extend({
     },
 
     /**
-     * Ensure addition of json_action=1 at a url which is no cakephp conform array.
+     * Ensure addition of json_action=1 and dialog_action=1 at a url which is no cakephp conform array.
      *
      * @param   mixed  url  URL to check for
      * @return  mixed
@@ -270,12 +270,12 @@ Frontend.Dialog = Class.extend({
 
             return url;
         }
-        
+
         if (typeof url !== 'string') {
             return url;
         }
 
-        if (url.indexOf('json_action=1') !== -1) {
+        if (url.indexOf('json_action=1') !== -1 && url.indexOf('dialog_action=1') !== -1) {
             return url;
         }
 
