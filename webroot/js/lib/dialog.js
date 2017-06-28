@@ -42,7 +42,7 @@ Frontend.Dialog = Class.extend({
                 if (response.data.redirect) {
                     var redirectUrl = response.data.redirect;
                     if (typeof redirectUrl === 'object') {
-                        redirectUrl = App.Main.Router.url(url);
+                        redirectUrl = App.Main.Router.url(redirectUrl);
                     }
 
                     window.location = redirectUrl;
