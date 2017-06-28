@@ -45,6 +45,13 @@ class FrontendBridgeComponent extends Component {
      */
     protected $_closeDialog = false;
 
+    protected $_defaultConfig = [
+        'templatePaths' => [
+            'jsonAction' => 'FrontendBridge.json_action',
+            'dialogAction'=> 'FrontendBridge.dialog_action'
+        ]
+    ];
+
     /**
      * Constructor
      *
@@ -140,6 +147,8 @@ class FrontendBridgeComponent extends Component {
     public function beforeRender(Event $event) {
         $this->setJson('isAjax', $this->_controller->request->is('ajax'));
         $this->setJson('isMobile', $this->_controller->request->is('mobile'));
+        $this->setBoth('isDialog', $this->_controller->request->is('dialog'));
+        $this->setBoth('isJson', $this->_controller->request->is('json'));
         $this->setJson('debug', Configure::read('debug'));
 
         $ssl = false;

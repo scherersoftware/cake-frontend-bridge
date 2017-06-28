@@ -110,8 +110,7 @@ Frontend.App = Class.extend({
             onError: null,
             parentController: null,
             initController: true,
-            replaceTarget: false,
-            dialog: null
+            replaceTarget: false
         }, options);
         if (typeof url == 'object') {
             //url.prefix = 'json_action/';

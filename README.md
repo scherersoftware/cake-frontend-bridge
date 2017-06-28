@@ -26,7 +26,7 @@ Open a terminal in your project-folder and run
 #### 3. Load the plugin in `config/bootstrap.php`
 
 ```
-Plugin::load('FrontendBridge', ['bootstrap' => false, 'routes' => true, 'autoload' => true]);
+Plugin::load('FrontendBridge', ['bootstrap' => true, 'routes' => true, 'autoload' => true]);
 ```
 
 #### 4. Create additional files

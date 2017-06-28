@@ -3,7 +3,6 @@ namespace FrontendBridge\Lib;
 
 trait FrontendBridgeTrait
 {
-
     /**
      * jsonActionResponse
      *
@@ -23,6 +22,7 @@ trait FrontendBridgeTrait
                 'closeDialog' => $this->viewVars['closeDialog']
             ]
         ];
+
         return new \FrontendBridge\Lib\ServiceResponse($response);
     }
 
@@ -35,9 +35,7 @@ trait FrontendBridgeTrait
      */
     public function renderJsonAction($view, $layout)
     {
-        if ($layout === null) {
-            $layout = 'FrontendBridge.json_action';
-        }
+        $layout = $this->getLayout($layout);
         if ($this->RequestHandler) {
             // Make sure the view is rendered as HTML, even if it is an AJAX request
             // jsonActionResponse() will make sure the JSON response is rendered correctly
@@ -45,9 +43,37 @@ trait FrontendBridgeTrait
             $this->RequestHandler->ext = 'html';
         }
         $response = parent::render($view, $layout);
+
         return $this->jsonActionResponse($response);
     }
 
+    /**
+     * Returns a layout to render.
+     *
+     * @param string $layout the layout path
+     * @return string
+     */
+    protected function getLayout($layout)
+    {
+        if ($layout === null) {
+            $fbcExists = isset($this->FrontendBridge);
+            $layout = 'FrontendBridge.json_action';
+
+            if ($fbcExists) {
+                $layout = $this->FrontendBridge->config('templatePaths.jsonAction');
+            }
+
+            if ($this->request->is('dialog')) {
+                $layout = 'FrontendBridge.dialog_action';
+
+                if ($fbcExists) {
+                    $layout = $this->FrontendBridge->config('templatePaths.dialogAction');
+                }
+            }
+        }
+
+        return $layout;
+    }
 
     /**
      * Json action redirect
@@ -55,7 +81,7 @@ trait FrontendBridgeTrait
      * @param  string  $url  URL
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    protected function jsonActionRedirect($url)
+    protected function redirectJsonAction($url)
     {
         $response = [
             'code' => 'success',
@@ -65,17 +91,5 @@ trait FrontendBridgeTrait
         ];
 
         return new \FrontendBridge\Lib\ServiceResponse($response);
-    }
-
-    /**
-     * Detect if the current request should be rendered as a JSON Action
-     *
-     * @return bool
-     */
-    protected function _isJsonActionRequest()
-    {
-        return
-            (isset($this->request->params['jsonAction']) && $this->request->params['jsonAction'] === true)
-            || $this->request->query('json_action') == 1;
     }
 }
