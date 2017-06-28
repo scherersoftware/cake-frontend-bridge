@@ -18,6 +18,7 @@ $dialogFooter =  $this->fetch('dialog_footer');
         <?php if (!empty($content)): ?>
             <div class="modal-body">
                 <?= $content ?>
+                <div class="clearfix"></div>
             </div>
         <?php endif; ?>
         <?php if (!empty($dialogFooter)): ?>

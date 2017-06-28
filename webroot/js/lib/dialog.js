@@ -66,8 +66,8 @@ Frontend.Dialog = Class.extend({
                 }
 
                 // Large modal option
-                if (config.largeModal) {
-                    $('.modal-dialog', this._modal).addClass('modal-lg');
+                if (config.additionalClasses) {
+                    $('.modal-dialog', this._modal).addClass(config.additionalClasses);
                 }
 
                 // Modal Initialize
@@ -130,7 +130,7 @@ Frontend.Dialog = Class.extend({
     _checkForModalTemplate: function()
     {
         if (!$('.modal').length) {
-            console.error('You need to load the modal template through FrontendBrigeHelper::loadModalTemplate function into DOM.');
+            console.error('You need to load the modal template through FrontendBrigeHelper::includeModal function into DOM.');
             return false;
         }
 
