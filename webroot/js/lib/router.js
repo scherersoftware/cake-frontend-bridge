@@ -57,13 +57,15 @@ Frontend.Router = Class.extend({
 
         var url = this.webroot + prefix + plugin + controller + '/' + action + '/';
 
-        if (pass instanceof Array) {
+        if (pass instanceof Array && pass.length > 0) {
             $.each(pass, function (i, val) {
                 url += val + '/';
             });
+            // remove last "/" from url to not disturb functionality of possible #-anchor in url
+            url = url.slice(0, -1);
         }
 
-        if (typeof query == 'object') {
+        if (typeof query == 'object' && !$.isEmptyObject(query)) {
             url += '?' + http_build_query(query);
         }
         return url;

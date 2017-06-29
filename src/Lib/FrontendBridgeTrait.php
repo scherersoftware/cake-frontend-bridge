@@ -1,6 +1,8 @@
 <?php
 namespace FrontendBridge\Lib;
 
+use FrontendBridge\Lib\ServiceResponse;
+
 trait FrontendBridgeTrait
 {
     /**
@@ -23,7 +25,7 @@ trait FrontendBridgeTrait
             ]
         ];
 
-        return new \FrontendBridge\Lib\ServiceResponse($response);
+        return new ServiceResponse($response);
     }
 
     /**
@@ -78,18 +80,28 @@ trait FrontendBridgeTrait
     /**
      * Json action redirect
      *
-     * @param  string  $url  URL
+     * @param  array|string  $url  URL
      * @return \FrontendBridge\Lib\ServiceResponse
      */
     protected function redirectJsonAction($url)
     {
+        if (is_array($url)) {
+            // collect the pass parameters of the url under "pass" key for JS-router compatibility
+            $pass = [];
+            foreach ($url as $key => $value) {
+                if (is_int($key)) {
+                    $pass[$key] = $value;
+                    unset($url[$key]);
+                }
+            }
+            $url['pass'] = $pass;
+        }
         $response = [
             'code' => 'success',
             'data' => [
                 'redirect' => $url
             ]
         ];
-
-        return new \FrontendBridge\Lib\ServiceResponse($response);
+        return new ServiceResponse($response);
     }
 }
