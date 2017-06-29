@@ -86,15 +86,7 @@ trait FrontendBridgeTrait
     protected function redirectJsonAction($url)
     {
         if (is_array($url)) {
-            // collect the pass parameters of the url under "pass" key for JS-router compatibility
-            $pass = [];
-            foreach ($url as $key => $value) {
-                if (is_int($key)) {
-                    $pass[$key] = $value;
-                    unset($url[$key]);
-                }
-            }
-            $url['pass'] = $pass;
+            $url = $this->prepareUrl($url);
         }
         $response = [
             'code' => 'success',
@@ -103,5 +95,26 @@ trait FrontendBridgeTrait
             ]
         ];
         return new ServiceResponse($response);
+    }
+
+    /**
+     * Prepare a url array for the JS router
+     *
+     * @param  array $url a standard CakePHP url array
+     * @return array
+     */
+    private function prepareUrl(array $url): array
+    {
+        // collect the pass parameters of the url under "pass" key for router.js compatibility
+        $pass = [];
+        foreach ($url as $key => $value) {
+            if (is_int($key)) {
+                $pass[$key] = $value;
+                unset($url[$key]);
+            }
+        }
+        $url['pass'] = $pass;
+
+        return $url;
     }
 }

@@ -61,7 +61,7 @@ Frontend.Router = Class.extend({
             $.each(pass, function (i, val) {
                 url += val + '/';
             });
-            // remove last "/" from url to not disturb functionality of possible #-anchor in url
+            // remove "/" from end to not disturb functionality of possible #-anchor in url
             url = url.slice(0, -1);
         }
 
