@@ -269,18 +269,31 @@ Frontend.Dialog = Class.extend({
         }.bind(this))
     },
 
+    
     /**
-     * Ensure addition of json_action=1 at a url which is no cakephp conform array.
+     * Ensure addition of json_action=1 and dialog_action=1 at a url which is no cakephp conform array.
      *
      * @param   mixed  url  URL to check for
      * @return  mixed
      */
     _ensureDialogAction: function(url) {
+        if (typeof url === 'object') {
+            if (url.hasOwnProperty('query')) {
+                url.query.dialog_action = 1;
+            } else {
+                url.query = {
+                    dialog_action: 1
+                }
+            }
+
+            return url;
+        }
+
         if (typeof url !== 'string') {
             return url;
         }
 
-        if (url.indexOf('json_action=1') !== -1) {
+        if (url.indexOf('json_action=1') !== -1 && url.indexOf('dialog_action=1') !== -1) {
             return url;
         }
 
