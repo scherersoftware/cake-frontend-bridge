@@ -269,7 +269,6 @@ Frontend.Dialog = Class.extend({
         }.bind(this))
     },
 
-    
     /**
      * Ensure addition of json_action=1 and dialog_action=1 at a url which is no cakephp conform array.
      *
