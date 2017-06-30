@@ -218,7 +218,6 @@ Frontend.Dialog = Class.extend({
                 data: formData,
                 preventHistory: true
             });
-            App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
         }.bind(this));
 
         if (this._history.entries.length > 0) {
