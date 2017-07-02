@@ -43,7 +43,6 @@ Frontend.Dialog = Class.extend({
      *
      * @param  object  url             Request URL in CakePHP style
      * @param  object  requestOptions  Request options for loadJsonAction
-     * @param  object  dialogOptions   Options for the dialog
      * @return void
      */
     loadDialog: function(url, requestOptions) {
