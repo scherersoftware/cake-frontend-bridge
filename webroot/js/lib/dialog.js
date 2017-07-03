@@ -24,6 +24,21 @@ Frontend.Dialog = Class.extend({
     _modalOpen: false,
 
     /**
+     * Configuration
+     *
+     * @type object
+     */
+    _config: {
+        selectTab: false,
+        additionalClasses: false,
+        initController: true,
+        replaceTarget: false,
+        preventHistory: false,
+        onLoadComplete: false,
+        onDialogClose: false
+    },
+
+    /**
      * Open dialog from action
      *
      * @param  object  url             Request URL in CakePHP style
@@ -35,9 +50,7 @@ Frontend.Dialog = Class.extend({
             return false;
         }
 
-        var config = jQuery.extend({}, requestOptions, {
-            initController: true,
-            replaceTarget: false,
+        this._config = jQuery.extend(this._config, requestOptions, {
             onComplete: function(controller, response) {
                 if (response.data.redirect) {
                     var redirectUrl = response.data.redirect;
@@ -60,14 +73,14 @@ Frontend.Dialog = Class.extend({
 
                 selectedTab = null;
                 // Tab selector
-                if (config.selectTab) {
-                    $(config.selectTab).tab('show');
-                    selectedTab = config.selectTab;
+                if (this._config.selectTab) {
+                    $(this._config.selectTab).tab('show');
+                    selectedTab = this._config.selectTab;
                 }
 
                 // Large modal option
-                if (config.additionalClasses) {
-                    $('.modal-dialog', this._modal).addClass(config.additionalClasses);
+                if (this._config.additionalClasses) {
+                    $('.modal-dialog', this._modal).addClass(this._config.additionalClasses);
                 }
 
                 // Modal Initialize
@@ -79,11 +92,11 @@ Frontend.Dialog = Class.extend({
                 });
 
                 // History and events
-                this._addHistory(url, config.preventHistory, selectedTab);
+                this._addHistory(url, this._config.preventHistory, selectedTab);
                 this._registerHandler();
 
-                if (config.onLoadComplete && typeof config.onLoadComplete === 'function') {
-                    config.onLoadComplete(controller, response);
+                if (typeof this._config.onLoadComplete === 'function') {
+                    this._config.onLoadComplete(controller, response);
                 }
 
                 App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
@@ -95,7 +108,7 @@ Frontend.Dialog = Class.extend({
         });
 
         App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-        App.Main.loadJsonAction(this._ensureDialogAction(url), config);
+        App.Main.loadJsonAction(this._ensureDialogAction(url), this._config);
     },
 
     /**
@@ -169,7 +182,7 @@ Frontend.Dialog = Class.extend({
      * @return void
      */
     _registerHandler: function() {
-        this._modal.on('hidden.bs.modal', function(e) {
+        this._modal.off('hidden.bs.modal').on('hidden.bs.modal', function(e) {
             this._cleanupModal();
             this._history = {
                 upcoming: null,
@@ -177,6 +190,10 @@ Frontend.Dialog = Class.extend({
             };
             $('.modal-dialog', this._modal).removeClass('modal-lg');
             this._modalOpen = false;
+
+            if (typeof this._config.onDialogClose === 'function') {
+                this._config.onDialogClose(this);
+            }
         }.bind(this));
 
         this._modal.on('shown.bs.modal', function () {
@@ -218,7 +235,6 @@ Frontend.Dialog = Class.extend({
                 data: formData,
                 preventHistory: true
             });
-            App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
         }.bind(this));
 
         if (this._history.entries.length > 0) {
