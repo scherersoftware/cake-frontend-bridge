@@ -2,13 +2,15 @@
 namespace FrontendBridge\Lib;
 
 use Cake\Network\Response;
+use Cake\Utility\Hash;
 
 /**
  * Custom CakeResponse for Service calls
  *
  * @package default
  */
-class ServiceResponse extends Response {
+class ServiceResponse extends Response
+{
 
 /**
  * Constructor
@@ -16,9 +18,10 @@ class ServiceResponse extends Response {
  * @param string $code 	One of Types::CODE_*, or an array containing 'code' and 'data' keys
  * @param array $data 	data to return
  */
-	public function __construct($code, array $data = array()) {
+	public function __construct(string $code, array $data = array())
+	{
 		if (is_array($code)) {
-			$body = \Cake\Utility\Hash::merge(array(
+			$body = Hash::merge(array(
 				'code' => 'success',
 				'data' => array()
 			), $code);
@@ -32,6 +35,7 @@ class ServiceResponse extends Response {
 			'type' => 'json',
 			'body' => json_encode($body)
 		);
+
 		parent::__construct($options);
 	}
 }

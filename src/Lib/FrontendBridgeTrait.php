@@ -1,6 +1,7 @@
 <?php
 namespace FrontendBridge\Lib;
 
+use Cake\Network\Response;
 use FrontendBridge\Lib\ServiceResponse;
 
 trait FrontendBridgeTrait
@@ -11,7 +12,7 @@ trait FrontendBridgeTrait
      * @param \Cake\Network\Response $response the response
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    protected function jsonActionResponse(\Cake\Network\Response $response)
+    protected function jsonActionResponse(Response $response): ServiceResponse
     {
         // get the frontendData set by the Frontend plugin and remove unnecessary data
         $frontendData = $this->viewVars['frontendData'];
@@ -35,7 +36,7 @@ trait FrontendBridgeTrait
      * @param string $layout the layout to render
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    public function renderJsonAction($view, $layout)
+    public function renderJsonAction($view, $layout): ServiceResponse
     {
         $layout = $this->getLayout($layout);
         if ($this->RequestHandler) {
@@ -55,20 +56,20 @@ trait FrontendBridgeTrait
      * @param string $layout the layout path
      * @return string
      */
-    protected function getLayout($layout)
+    protected function getLayout(string $layout): string
     {
         if ($layout === null) {
-            $fbcExists = isset($this->FrontendBridge);
+            $frontendBridgeComponentExists = isset($this->FrontendBridge);
             $layout = 'FrontendBridge.json_action';
 
-            if ($fbcExists) {
+            if ($frontendBridgeComponentExists) {
                 $layout = $this->FrontendBridge->config('templatePaths.jsonAction');
             }
 
             if ($this->request->is('dialog')) {
                 $layout = 'FrontendBridge.dialog_action';
 
-                if ($fbcExists) {
+                if ($frontendBridgeComponentExists) {
                     $layout = $this->FrontendBridge->config('templatePaths.dialogAction');
                 }
             }
@@ -83,7 +84,7 @@ trait FrontendBridgeTrait
      * @param  array|string  $url  URL
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    protected function redirectJsonAction($url)
+    protected function redirectJsonAction($url): ServiceResponse
     {
         if (is_array($url)) {
             $url = $this->prepareUrl($url);

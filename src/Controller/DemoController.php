@@ -1,7 +1,8 @@
 <?php
 namespace FrontendBridge\Controller;
 
-class DemoController extends AppController {
+class DemoController extends AppController
+{
 
 	public $components = [
 		'FrontendBridge.FrontendBridge'
@@ -16,7 +17,8 @@ class DemoController extends AppController {
  *
  * @return void
  */
-	public function index() {
+	public function index()
+	{
 		$this->FrontendBridge->setJson('foobar', 'foo');
 	}
 }

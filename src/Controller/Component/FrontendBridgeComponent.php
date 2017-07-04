@@ -8,7 +8,8 @@ use Cake\Event\Event;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
-class FrontendBridgeComponent extends Component {
+class FrontendBridgeComponent extends Component
+{
 
     /**
      * Holds a reference to the controller which uses this component
@@ -58,7 +59,8 @@ class FrontendBridgeComponent extends Component {
      * @param ComponentRegistry $registry A ComponentRegistry object.
      * @param array $config Array of configuration settings.
      */
-    public function __construct(ComponentRegistry $registry, array $config = []) {
+    public function __construct(ComponentRegistry $registry, array $config = [])
+    {
         parent::__construct($registry, $config);
 
         $this->_controller = $registry->getController();
@@ -70,7 +72,8 @@ class FrontendBridgeComponent extends Component {
      *
      * @return array
      */
-    public function implementedEvents() {
+    public function implementedEvents(): array
+    {
         return [
             'Controller.beforeRender' => 'beforeRender'
         ];
@@ -83,7 +86,8 @@ class FrontendBridgeComponent extends Component {
      * @param mixed $value value
      * @return void
      */
-    public function setJson($key, $value = null) {
+    public function setJson(string $key, $value = null): void
+    {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $this->setJson($k, $v);
@@ -101,7 +105,8 @@ class FrontendBridgeComponent extends Component {
      * @param mixed $value value
      * @return void
      */
-    public function set($key, $value = null) {
+    public function set(string $key, $value = null): void
+    {
         $this->setJson($key, $value);
     }
 
@@ -112,7 +117,8 @@ class FrontendBridgeComponent extends Component {
      * @param mixed $value value
      * @return void
      */
-    public function addAppData($key, $value = null) {
+    public function addAppData(string $key, $value = null): void
+    {
         $this->_additionalAppData[$key] = $value;
     }
 
@@ -123,7 +129,8 @@ class FrontendBridgeComponent extends Component {
      * @param mixed $value var value
      * @return void
      */
-    public function setBoth($key, $value = null) {
+    public function setBoth(string $key, $value = null): void
+    {
         $this->_controller->set($key, $value);
         $this->setJson($key, $value);
     }
@@ -133,7 +140,7 @@ class FrontendBridgeComponent extends Component {
      *
      * @return void
      */
-    public function closeDialog()
+    public function closeDialog(): void
     {
         $this->_closeDialog = true;
     }
@@ -144,7 +151,8 @@ class FrontendBridgeComponent extends Component {
      * @param Event $event beforeRender event
      * @return void
      */
-    public function beforeRender(Event $event) {
+    public function beforeRender(Event $event): void
+    {
         $this->setJson('isAjax', $this->_controller->request->is('ajax'));
         $this->setJson('isMobile', $this->_controller->request->is('mobile'));
         $this->setBoth('isDialog', $this->_controller->request->is('dialog'));
