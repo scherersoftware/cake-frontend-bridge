@@ -10,7 +10,8 @@ Frontend.Router = Class.extend({
         pass: [],
         query: {},
         prefix: '',
-        plugin: null
+        plugin: null,
+        '#': null,
     },
     /**
      * Class constructor
@@ -32,20 +33,22 @@ Frontend.Router = Class.extend({
      * and action keys (see this.urlDefaults). Otherwise it takes
      * the function arguments.
      *
-     * @param string    controller     The controller name in lower case
-     * @param string    action         The controller action
-     * @param Array        pass        An array containing the pass params (/arg1/arg2/)
-     * @param Object     query        An object containing the named params, indexed by param name
+     * @param string    controller   The controller name in lower case
+     * @param string    action       The controller action
+     * @param Array     pass         An array containing the pass params (/arg1/arg2/)
+     * @param Object    query        An object containing the named params, indexed by param name
+     * @param string    anchor       The anchor to append to the url
      * @return string                The generated URL
      */
-    url: function(controller, action, pass, query) {
+    url: function(controller, action, pass, query, anchor) {
         if (typeof controller == 'object') {
             var params = jQuery.extend({}, this.urlDefaults, controller);
-            var controller = params.controller;
-            var action = params.action;
-            var pass = params.pass;
+            controller = params.controller;
+            action = params.action;
+            pass = params.pass;
+            query = params.query;
+            anchor = params['#'];
             var prefix = params.prefix;
-            var query = params.query;
             var plugin = params.plugin;
         }
 
@@ -57,15 +60,22 @@ Frontend.Router = Class.extend({
 
         var url = this.webroot + prefix + plugin + controller + '/' + action + '/';
 
-        if (pass instanceof Array) {
+        if (pass instanceof Array && pass.length > 0) {
             $.each(pass, function (i, val) {
                 url += val + '/';
             });
+            // remove "/" from end to not disturb functionality of possible #-anchor in url
+            url = url.slice(0, -1);
         }
 
-        if (typeof query == 'object') {
+        if (typeof query == 'object' && !$.isEmptyObject(query)) {
             url += '?' + http_build_query(query);
         }
+
+        if (anchor) {
+            url += '#' + anchor;
+        }
+
         return url;
     },
     /**

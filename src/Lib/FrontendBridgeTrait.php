@@ -1,6 +1,8 @@
 <?php
 namespace FrontendBridge\Lib;
 
+use FrontendBridge\Lib\ServiceResponse;
+
 trait FrontendBridgeTrait
 {
     /**
@@ -23,7 +25,7 @@ trait FrontendBridgeTrait
             ]
         ];
 
-        return new \FrontendBridge\Lib\ServiceResponse($response);
+        return new ServiceResponse($response);
     }
 
     /**
@@ -78,18 +80,41 @@ trait FrontendBridgeTrait
     /**
      * Json action redirect
      *
-     * @param  string  $url  URL
+     * @param  array|string  $url  URL
      * @return \FrontendBridge\Lib\ServiceResponse
      */
     protected function redirectJsonAction($url)
     {
+        if (is_array($url)) {
+            $url = $this->prepareUrl($url);
+        }
         $response = [
             'code' => 'success',
             'data' => [
                 'redirect' => $url
             ]
         ];
+        return new ServiceResponse($response);
+    }
 
-        return new \FrontendBridge\Lib\ServiceResponse($response);
+    /**
+     * Prepare a url array for the JS router
+     *
+     * @param  array $url a standard CakePHP url array
+     * @return array
+     */
+    private function prepareUrl(array $url): array
+    {
+        // collect the pass parameters of the url under "pass" key for router.js compatibility
+        $pass = [];
+        foreach ($url as $key => $value) {
+            if (is_int($key)) {
+                $pass[$key] = $value;
+                unset($url[$key]);
+            }
+        }
+        $url['pass'] = $pass;
+
+        return $url;
     }
 }
