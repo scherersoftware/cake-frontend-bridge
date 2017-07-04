@@ -37,17 +37,17 @@ Frontend.Router = Class.extend({
      * @param string    action       The controller action
      * @param Array     pass         An array containing the pass params (/arg1/arg2/)
      * @param Object    query        An object containing the named params, indexed by param name
-     * @param string    string       The hash to append to the url
+     * @param string    anchor       The anchor to append to the url
      * @return string                The generated URL
      */
-    url: function(controller, action, pass, query, hash) {
+    url: function(controller, action, pass, query, anchor) {
         if (typeof controller == 'object') {
             var params = jQuery.extend({}, this.urlDefaults, controller);
             controller = params.controller;
             action = params.action;
             pass = params.pass;
             query = params.query;
-            hash = params['#'];
+            anchor = params['#'];
             var prefix = params.prefix;
             var plugin = params.plugin;
         }
@@ -72,8 +72,8 @@ Frontend.Router = Class.extend({
             url += '?' + http_build_query(query);
         }
 
-        if (hash) {
-            url += '#' + hash;
+        if (anchor) {
+            url += '#' + anchor;
         }
 
         return url;
