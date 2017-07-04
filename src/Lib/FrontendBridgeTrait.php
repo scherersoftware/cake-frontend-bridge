@@ -103,7 +103,7 @@ trait FrontendBridgeTrait
      * @param  array $url a standard CakePHP url array
      * @return array
      */
-    private function prepareUrl(array $url)
+    private function prepareUrl(array $url): array
     {
         // collect the pass parameters of the url under "pass" key for router.js compatibility
         $pass = [];

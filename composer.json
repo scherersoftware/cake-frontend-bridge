@@ -4,17 +4,15 @@
 	"license": "MIT",
 	"type": "cakephp-plugin",
 	"extra": {
-    	"installer-name": "FrontendBridge"
+		"installer-name": "FrontendBridge"
 	},
 	"require": {
+		"php": "~7.1",
 		"cakephp/plugin-installer": "*"
-	},
-	"require-dev": {
-		"cakephp/cakephp": "3.0.x-dev"
 	},
 	"autoload": {
 		"psr-4": {
-		"FrontendBridge\\": "src"
+			"FrontendBridge\\": "src"
 		}
 	}
 }
