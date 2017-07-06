@@ -218,6 +218,11 @@ Frontend.Dialog = Class.extend({
         }.bind(this));
 
         $('form', this._modal).off('submit').on('submit', function(e) {
+            var $target = $(e.currentTarget);
+            if($target.data('ajax-submit') === 0) {
+                return;
+            }
+            
             e.preventDefault();
 
             this._cleanupModal();
