@@ -218,17 +218,22 @@ Frontend.Dialog = Class.extend({
         }.bind(this));
 
         $('form', this._modal).off('submit').on('submit', function(e) {
+            var $target = $(e.currentTarget);
+            if($target.data('ajax-submit') === 0) {
+                return;
+            }
+            
             e.preventDefault();
 
             this._cleanupModal();
             App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-            var url = $(e.currentTarget).attr('action');
+            var url = $target.attr('action');
 
             var formData = null;
             if (!!window.FormData) {
                 formData = new FormData(e.currentTarget);
             } else {
-                formData = $(e.currentTarget).serialize();
+                formData = $target.serialize();
             }
 
             this.loadDialog(url, {
