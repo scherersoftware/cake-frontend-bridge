@@ -227,13 +227,13 @@ Frontend.Dialog = Class.extend({
 
             this._cleanupModal();
             App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-            var url = $(e.currentTarget).attr('action');
+            var url = $target.attr('action');
 
             var formData = null;
             if (!!window.FormData) {
                 formData = new FormData(e.currentTarget);
             } else {
-                formData = $(e.currentTarget).serialize();
+                formData = $target.serialize();
             }
 
             this.loadDialog(url, {
