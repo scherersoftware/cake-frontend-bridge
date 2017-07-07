@@ -82,7 +82,7 @@ class FrontendBridgeComponent extends Component
     /**
      * Pass data to the frontend controller
      *
-     * @param string $key string key or array of key=>values
+     * @param string|array $key string key or array of key=>values
      * @param mixed $value value
      * @return void
      */
