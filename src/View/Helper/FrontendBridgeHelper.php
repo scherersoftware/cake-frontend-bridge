@@ -460,12 +460,28 @@ class FrontendBridgeHelper extends Helper
     }
 
     /**
+     * Get the back button for modal dialogs if dialog_header is not used
+     *
+     * @param  string $title optional title of the button, default is translation of "back"
+     * @return string        HTML
+     */
+    public function dialogBackButton(string $title = null): string
+    {
+        $button = '<button class="modal-back btn btn-primary">';
+        $button .= '<i class="fa fa-fw fa-arrow-left"></i>';
+        $button .= $title ?? __('dialog.back');
+        $button .= '</button>';
+
+        return $button;
+    }
+
+    /**
      * Add a file to the frontend dependencies
      *
      * @param string $file path to be added
      * @return void
      */
-    protected function _addDependency($file): void
+    protected function _addDependency(string $file): void
     {
         $file = str_replace('\\', '/', $file);
         if (!in_array($file, $this->_dependencies)) {
