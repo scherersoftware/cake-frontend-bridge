@@ -56,7 +56,7 @@ trait FrontendBridgeTrait
      * @param string $layout the layout path
      * @return string
      */
-    protected function getLayout(string $layout): string
+    protected function getLayout(?string $layout): string
     {
         if ($layout === null) {
             $frontendBridgeComponentExists = isset($this->FrontendBridge);
