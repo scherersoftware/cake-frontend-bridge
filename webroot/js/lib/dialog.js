@@ -24,11 +24,11 @@ Frontend.Dialog = Class.extend({
     _modalOpen: false,
 
     /**
-     * Configuration
+     * Default configuration
      *
      * @type object
      */
-    _config: {
+    _defaultConfig: {
         selectTab: false,
         additionalClasses: false,
         initController: true,
@@ -37,6 +37,13 @@ Frontend.Dialog = Class.extend({
         onLoadComplete: false,
         onDialogClose: false
     },
+
+    /**
+     * Configuration
+     *
+     * @type object
+     */
+    _config: {},
 
     /**
      * Open dialog from action
@@ -50,7 +57,8 @@ Frontend.Dialog = Class.extend({
             return false;
         }
 
-        this._config = jQuery.extend(this._config, requestOptions, {
+        this._config = {};
+        jQuery.extend(this._config, this._defaultConfig, requestOptions, {
             onComplete: function(controller, response) {
                 if (response.data.redirect) {
                     var redirectUrl = response.data.redirect;
