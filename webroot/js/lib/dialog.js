@@ -67,6 +67,8 @@ Frontend.Dialog = Class.extend({
                     }
 
                     window.location = redirectUrl;
+                    // Force reloading for urls containing an anchor
+                    window.location.reload(true);
                     return
                 }
                 // Error handling
