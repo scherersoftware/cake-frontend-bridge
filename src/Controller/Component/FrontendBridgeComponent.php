@@ -129,7 +129,7 @@ class FrontendBridgeComponent extends Component
      * @param mixed $value var value
      * @return void
      */
-    public function setBoth(string $key, $value = null): void
+    public function setBoth($key, $value = null): void
     {
         $this->_controller->set($key, $value);
         $this->setJson($key, $value);
