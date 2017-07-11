@@ -102,7 +102,7 @@ Frontend.Dialog = Class.extend({
                 });
 
                 // History and events
-                this._addHistory(url, this._config.preventHistory, selectedTab);
+                this._addHistory(url, this._config, selectedTab);
                 this._registerHandler();
 
                 if (typeof this._config.onLoadComplete === 'function') {
@@ -164,11 +164,12 @@ Frontend.Dialog = Class.extend({
      * Add item to history
      *
      * @param  object  url              Request URL in CakePHP style
-     * @param  bool    preventUpcoming  Prevent writing of a new upcoming entry
+     * @param  object  config           the config object of the initial call
      * @param  string  selectedTab      Selected tab
      * @return void
      */
-    _addHistory: function(url, preventUpcoming, selectedTab) {
+    _addHistory: function(url, config, selectedTab) {
+        var preventUpcoming = config.preventHistory;
         if (this._history.upcoming && !preventUpcoming) {
             this._history.entries.push(this._history.upcoming);
         }
@@ -180,7 +181,8 @@ Frontend.Dialog = Class.extend({
             url = {
                 url: url,
                 title: $('.modal-title', this._modal).html(),
-                selectedTab: selectedTab
+                selectedTab: selectedTab,
+                additionalClasses: config.additionalClasses
             };
         }
         this._history.upcoming = url;
@@ -232,7 +234,7 @@ Frontend.Dialog = Class.extend({
             if($target.data('ajax-submit') === 0) {
                 return;
             }
-            
+
             e.preventDefault();
 
             this._cleanupModal();
@@ -266,11 +268,12 @@ Frontend.Dialog = Class.extend({
             this._cleanupModal();
 
             App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-            var url = this._history.entries.pop();
-            this.loadDialog(url.url, {
+            var historyEntry = this._history.entries.pop();
+            this.loadDialog(historyEntry.url, {
                 preventHistory: true,
-                modalTitle: url.title,
-                selectTab: url.selectedTab
+                modalTitle: historyEntry.title,
+                selectTab: historyEntry.selectedTab,
+                additionalClasses: historyEntry.additionalClasses
             });
             App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
         }.bind(this));
