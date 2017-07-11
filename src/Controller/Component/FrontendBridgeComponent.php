@@ -86,7 +86,7 @@ class FrontendBridgeComponent extends Component
      * @param mixed $value value
      * @return void
      */
-    public function setJson(string $key, $value = null): void
+    public function setJson($key, $value = null): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -105,7 +105,7 @@ class FrontendBridgeComponent extends Component
      * @param mixed $value value
      * @return void
      */
-    public function set(string $key, $value = null): void
+    public function set($key, $value = null): void
     {
         $this->setJson($key, $value);
     }
