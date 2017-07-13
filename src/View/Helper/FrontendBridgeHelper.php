@@ -469,7 +469,7 @@ class FrontendBridgeHelper extends Helper
     {
         $button = '<button class="modal-back btn btn-default btn-xs">';
         $button .= '<i class="fa fa-fw fa-arrow-left"></i>';
-        $button .= $title ?? __('dialog.back');
+        $button .= $title ?? __('back');
         $button .= '</button>';
 
         return $button;
