@@ -467,7 +467,7 @@ class FrontendBridgeHelper extends Helper
      */
     public function dialogBackButton(string $title = null): string
     {
-        $button = '<button class="modal-back btn btn-primary">';
+        $button = '<button class="modal-back btn btn-default btn-xs">';
         $button .= '<i class="fa fa-fw fa-arrow-left"></i>';
         $button .= $title ?? __('dialog.back');
         $button .= '</button>';

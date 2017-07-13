@@ -8,7 +8,7 @@ $dialogFooter =  $this->fetch('dialog_footer');
     <div class="modal-content">
         <?php if (!empty($dialogHeader)): ?>
             <div class="modal-header">
-                <button class="modal-back btn btn-primary">
+                <button class="modal-back btn btn-default btn-xs">
                     <i class="fa fa-fw fa-arrow-left"></i>
                     <?= __('dialog.back'); ?>
                 </button>
