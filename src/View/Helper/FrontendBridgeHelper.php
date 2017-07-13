@@ -201,7 +201,7 @@ class FrontendBridgeHelper extends Helper
         $this->_dependencies = array_unique($this->_dependencies);
 
         $out .= $this->getNamespaceDefinitions();
-        $this->_addCurrentController();
+        $this->addCurrentController();
 
         foreach ($this->_dependencies as $dependency) {
             if (strpos($dependency, DS) !== false) {
@@ -238,7 +238,7 @@ class FrontendBridgeHelper extends Helper
      *
      * @return void
      */
-    protected function _addCurrentController(): void
+    public function addCurrentController(): void
     {
         $controllerName = Inflector::camelize($this->_frontendData['request']['controller']);
         $this->addController(
