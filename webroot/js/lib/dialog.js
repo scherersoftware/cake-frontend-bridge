@@ -112,13 +112,22 @@ Frontend.Dialog = Class.extend({
                 App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
 
                 if (response.data.closeDialog) {
-                    this._cleanupModal();
+                    this.close();
                 }
             }.bind(this)
         });
 
         App.Main.UIBlocker.blockElement($(this._getBlockElement()));
         App.Main.loadJsonAction(this._ensureDialogAction(url), this._config);
+    },
+
+    /**
+     * Closes the dialog
+     *
+     * @protected
+     */
+    close: function() {
+        this._modal.modal('hide');
     },
 
     /**
@@ -220,13 +229,13 @@ Frontend.Dialog = Class.extend({
 
             // Escape key
             if (e.keyCode === 27) {
-                this._modal.modal('hide');
+                this.close();
             }
         }.bind(this));
 
         $('.modal-header .close, .modal-header .close-btn, .modal-footer .cancel-button', this._modal).off('click').on('click', function(e) {
             e.preventDefault();
-            this._modal.modal('hide');
+            this.close();
         }.bind(this));
 
         $('form', this._modal).off('submit').on('submit', function(e) {
