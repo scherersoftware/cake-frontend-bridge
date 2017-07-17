@@ -257,10 +257,14 @@ Frontend.Dialog = Class.extend({
                 formData = $target.serialize();
             }
 
-            this.loadDialog(url, {
+            var config = this._config;
+            
+            jQuery.extend(config, {
                 data: formData,
                 preventHistory: true
             });
+
+            this.loadDialog(url, config);
         }.bind(this));
 
         if (this._history.entries.length > 0) {
