@@ -175,7 +175,7 @@ Frontend.App = Class.extend({
       */
      cleanControllerInstances: function(removedElement) {
          var $controllerElements = $(removedElement).find('.controller');
-         if ($controllerElements.length == 0) {
+         if ($controllerElements.length !== 0) {
              $controllerElements.each(function(index, controller) {
                  var instanceId = $(controller).data('instance-id');
                  this._removeControllerInstance(instanceId)
