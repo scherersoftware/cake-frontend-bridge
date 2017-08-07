@@ -82,7 +82,9 @@ Frontend.Dialog = Class.extend({
                     } else {
                         window.location = redirectUrl;
                         // Force reloading for urls containing an anchor
-                        window.location.reload(true);
+                        if (redirectUrl.indexOf('#') !== -1) {
+                            window.location.reload(true);
+                        }
                     }
                     this.tmpConfig = {};
                     return
