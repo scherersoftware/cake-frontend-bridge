@@ -92,6 +92,7 @@ trait FrontendBridgeTrait
         $response = [
             'code' => 'success',
             'data' => [
+                'inDialog' => $this->request->is('dialog') && !$this->FrontendBridge->_closeDialog,
                 'redirect' => $url
             ]
         ];

@@ -46,6 +46,13 @@ Frontend.Dialog = Class.extend({
     _config: {},
 
     /**
+     * Tmp Configuration
+     *
+     * @type object
+     */
+    tmpConfig: {},
+
+    /**
      * Open dialog from action
      *
      * @param  object  url             Request URL in CakePHP style
@@ -58,7 +65,7 @@ Frontend.Dialog = Class.extend({
         }
 
         this._config = {};
-        jQuery.extend(this._config, this._defaultConfig, requestOptions, {
+        jQuery.extend(this._config, this._defaultConfig, requestOptions, this.tmpConfig, {
             onComplete: function(controller, response) {
                 if (response.data.redirect) {
                     var redirectUrl = response.data.redirect;
@@ -66,15 +73,23 @@ Frontend.Dialog = Class.extend({
                         redirectUrl = App.Main.Router.url(redirectUrl);
                     }
 
-                    window.location = redirectUrl;
-                    // Force reloading for urls containing an anchor
-                    if (redirectUrl.indexOf('#') !== -1) {
+                    if (response.data.inDialog) {
+                        delete requestOptions.data;
+                        this.loadDialog(this._ensureDialogAction(redirectUrl), {
+                            preventHistory: true,
+                            additionalClasses: requestOptions.additionalClasses,
+                        });
+                    } else {
+                        window.location = redirectUrl;
+                        // Force reloading for urls containing an anchor
                         window.location.reload(true);
                     }
+                    this.tmpConfig = {};
                     return
                 }
                 // Error handling
                 if (!response.data.html) {
+                    this.tmpConfig = {};
                     return console.error('No response HTML available.');
                 }
 
@@ -116,6 +131,7 @@ Frontend.Dialog = Class.extend({
                 if (response.data.closeDialog) {
                     this.close();
                 }
+                this.tmpConfig = {};
             }.bind(this)
         });
 
@@ -260,7 +276,7 @@ Frontend.Dialog = Class.extend({
             }
 
             var config = this._config;
-            
+
             jQuery.extend(config, {
                 data: formData,
                 preventHistory: true
