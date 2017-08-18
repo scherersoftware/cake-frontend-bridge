@@ -4,14 +4,6 @@ Frontend.UIBlocker = Class.extend({
     },
     _blockUiOptions: {
         fadeIn: 50,
-        fadeOut: 150,
-        message: '&nbsp;Bitte warten', // blockElement won't display with an empty message.
-        overlayCSS: {
-            backgroundColor: '#fff'
-        }
-    },
-    _blockUiOptions: {
-        fadeIn: 50,
         fadeOut: 50,
         message: '&nbsp;', // blockElement won't display with an empty message.
         overlayCSS:  {
