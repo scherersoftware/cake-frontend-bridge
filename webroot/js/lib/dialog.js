@@ -134,6 +134,29 @@ Frontend.Dialog = Class.extend({
                     this.close();
                 }
                 this.tmpConfig = {};
+            }.bind(this),
+            onError: function (response) {
+                if (response.responseText !== '') {
+
+                    // Initialize new dialog
+                    this._modal = $('.modal');
+                    // Content setter
+                    this._setContent(response.responseText);
+
+                    // Large modal option
+                    if (this._config.additionalClasses) {
+                        $('.modal-dialog', this._modal).addClass(this._config.additionalClasses);
+                    }
+
+                    // Modal Initialize
+                    this._modal.modal({
+                        backdrop: true,
+                        keyboard: true,
+                        focus: true,
+                        show: true
+                    });
+                }
+                App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
             }.bind(this)
         });
 
