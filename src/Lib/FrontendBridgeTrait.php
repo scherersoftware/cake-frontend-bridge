@@ -7,7 +7,7 @@ use FrontendBridge\Lib\ServiceResponse;
 trait FrontendBridgeTrait
 {
     /**
-     * jsonActionResponse
+     * jsonActionResponsewithType
      *
      * @param \Cake\Network\Response $response the response
      * @return \FrontendBridge\Lib\ServiceResponse
@@ -46,8 +46,9 @@ trait FrontendBridgeTrait
             $this->RequestHandler->ext = 'html';
         }
         $response = parent::render($view, $layout);
+        $this->response = $this->jsonActionResponse($response);
 
-        return $this->jsonActionResponse($response);
+        return $this->response;
     }
 
     /**
@@ -96,7 +97,9 @@ trait FrontendBridgeTrait
                 'redirect' => $url
             ]
         ];
-        return new ServiceResponse($response);
+        $this->$response = new ServiceResponse($response);
+
+        return $this->response;
     }
 
     /**

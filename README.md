@@ -70,6 +70,24 @@ use \FrontendBridge\Lib\FrontendBridgeTrait;
 'FrontendBridge.FrontendBridge',
 ```
 
+**render method**
+
+Overwrite the `render()` method to properly render JsonAction responses.
+
+```
+    /**
+     * {@inheritDoc}
+     */
+    public function render($view = null, $layout = null)
+    {
+        if ($this->request->is('jsonAction')) {
+            return $this->renderJsonAction($view, $layout);
+        }
+
+        return parent::render($view, $layout);
+    }
+```
+
 #### 6. Load the scripts
 
 Inside your ```<head>``` section add the following code to load all needed .js controllers:
