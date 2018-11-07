@@ -274,7 +274,7 @@ Frontend.App = Class.extend({
             $.extend(ajaxData, {processData: false, contentType: false});
         }
 
-        $.ajax(ajaxData).done(function(data) {
+        $.ajax(ajaxData).always(function(data) {
             if (requestType === 'POST') {
                 this.requestCounter--;
             }
