@@ -5,6 +5,7 @@ Frontend.App = Class.extend({
     PageController: null,
     _errorHandler: null,
     Dialog: null,
+    requestCounter: 0,
     /**
      * Holds an instance of the router class
      *
@@ -227,6 +228,11 @@ Frontend.App = Class.extend({
             dataType: 'json',
             cache: false,
             context: this,
+            beforeSend: function(jqXHR, settings) {
+                if (requestType === 'POST') {
+                    this.requestCounter++;
+                }
+            },
             success: function(response, textStatus, jqXHR) {
                 if (response == null) {
                     var response = {
@@ -268,7 +274,11 @@ Frontend.App = Class.extend({
             $.extend(ajaxData, {processData: false, contentType: false});
         }
 
-        $.ajax(ajaxData);
+        $.ajax(ajaxData).done(function(data) {
+            if (requestType === 'POST') {
+                this.requestCounter--;
+            }
+        });
     },
     /**
      * Redirects the user to another page
