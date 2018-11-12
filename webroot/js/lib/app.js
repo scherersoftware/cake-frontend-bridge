@@ -234,6 +234,10 @@ Frontend.App = Class.extend({
                 }
             },
             success: function(response, textStatus, jqXHR) {
+                if (requestType === 'POST') {
+                   this.requestCounter--;
+                }
+
                 if (response == null) {
                     var response = {
                         code: 'error'
@@ -245,6 +249,10 @@ Frontend.App = Class.extend({
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                if (requestType === 'POST') {
+                    this.requestCounter--;
+                }
+
                 var responseText = jqXHR.responseText;
                 var response = null;
                 try {
@@ -274,11 +282,7 @@ Frontend.App = Class.extend({
             $.extend(ajaxData, {processData: false, contentType: false});
         }
 
-        $.ajax(ajaxData).always(function(data) {
-            if (requestType === 'POST') {
-                this.requestCounter--;
-            }
-        });
+        $.ajax(ajaxData);
     },
     /**
      * Redirects the user to another page
