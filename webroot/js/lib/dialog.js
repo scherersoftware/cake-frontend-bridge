@@ -59,14 +59,14 @@ Frontend.Dialog = Class.extend({
      * @param  object  requestOptions  Request options for loadJsonAction
      * @return void
      */
-    loadDialog: function(url, requestOptions) {
+    loadDialog: function (url, requestOptions) {
         if (!this._checkForModalTemplate()) {
             return false;
         }
 
         this._config = {};
         jQuery.extend(this._config, this._defaultConfig, requestOptions, this.tmpConfig, {
-            onComplete: function(controller, response) {
+            onComplete: function (controller, response) {
                 if (response.data.redirect) {
                     var redirectUrl = response.data.redirect;
                     if (typeof redirectUrl === 'object') {
@@ -96,7 +96,7 @@ Frontend.Dialog = Class.extend({
                 }
 
                 // Initialize new dialog
-                this._modal = $('.modal');
+                this._modal = $('#frontend-bridge-modal');
                 // Content setter
                 this._setContent(response.data.html);
 
@@ -146,7 +146,7 @@ Frontend.Dialog = Class.extend({
      *
      * @protected
      */
-    close: function() {
+    close: function () {
         this._modal.modal('hide');
     },
 
@@ -155,7 +155,7 @@ Frontend.Dialog = Class.extend({
      *
      * @return string
      */
-    _getBlockElement: function() {
+    _getBlockElement: function () {
         var blockElement = 'body';
         if (this._modalOpen) {
             blockElement = '.modal-dialog';
@@ -170,7 +170,7 @@ Frontend.Dialog = Class.extend({
      * @param  string  content  HTML Content
      * @return void
      */
-    _setContent: function(content) {
+    _setContent: function (content) {
         this._modal.html(content);
     },
 
@@ -179,9 +179,8 @@ Frontend.Dialog = Class.extend({
      *
      * @return bool
      */
-    _checkForModalTemplate: function()
-    {
-        if (!$('.modal').length) {
+    _checkForModalTemplate: function () {
+        if (!$('#frontend-bridge-modal').length) {
             console.error('You need to load the modal template through FrontendBrigeHelper::includeModal function into DOM.');
             return false;
         }
@@ -197,7 +196,7 @@ Frontend.Dialog = Class.extend({
      * @param  string  selectedTab      Selected tab
      * @return void
      */
-    _addHistory: function(url, config, selectedTab) {
+    _addHistory: function (url, config, selectedTab) {
         var preventUpcoming = config.preventHistory;
         if (this._history.upcoming && !preventUpcoming) {
             this._history.entries.push(this._history.upcoming);
@@ -222,8 +221,8 @@ Frontend.Dialog = Class.extend({
      *
      * @return void
      */
-    _registerHandler: function() {
-        this._modal.off('hidden.bs.modal').on('hidden.bs.modal', function(e) {
+    _registerHandler: function () {
+        this._modal.off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
             this._cleanupModal();
             this._history = {
                 upcoming: null,
@@ -242,7 +241,7 @@ Frontend.Dialog = Class.extend({
         }.bind(this));
 
 
-        $(document).on('keyup', function(e) {
+        $(document).on('keyup', function (e) {
             if (!this._modal) {
                 return;
             }
@@ -253,14 +252,14 @@ Frontend.Dialog = Class.extend({
             }
         }.bind(this));
 
-        $('.modal-header .close, .modal-header .close-btn, .modal-footer .cancel-button', this._modal).off('click').on('click', function(e) {
+        $('.modal-header .close, .modal-header .close-btn, .modal-footer .cancel-button', this._modal).off('click').on('click', function (e) {
             e.preventDefault();
             this.close();
         }.bind(this));
 
-        $('form', this._modal).off('submit').on('submit', function(e) {
+        $('form', this._modal).off('submit').on('submit', function (e) {
             var $target = $(e.currentTarget);
-            if($target.data('ajax-submit') === 0) {
+            if ($target.data('ajax-submit') === 0) {
                 return;
             }
 
@@ -293,7 +292,7 @@ Frontend.Dialog = Class.extend({
             $('.modal-back', this._modal).hide();
         }
 
-        $('.modal-back', this._modal).off('click').on('click', function(e) {
+        $('.modal-back', this._modal).off('click').on('click', function (e) {
             if (this._history.entries.length <= 0) {
                 return;
             }
@@ -325,7 +324,7 @@ Frontend.Dialog = Class.extend({
      * @param   mixed  url  URL to check for
      * @return  mixed
      */
-    _ensureDialogAction: function(url) {
+    _ensureDialogAction: function (url) {
         if (typeof url === 'object') {
             if (url.hasOwnProperty('query')) {
                 url.query.dialog_action = 1;
@@ -361,8 +360,8 @@ Frontend.Dialog = Class.extend({
      *
      * @return void
      */
-    _cleanupModal: function() {
-        if (!this._modal) {
+    _cleanupModal: function () {
+        if (!this._modal) {
             return;
         }
 
