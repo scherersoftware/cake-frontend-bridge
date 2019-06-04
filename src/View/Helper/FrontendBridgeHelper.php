@@ -97,7 +97,7 @@ class FrontendBridgeHelper extends Helper
                     $dependency
                 );
             }
-            if (substr($dependency, 0, 4) == '/js/') {
+            if (substr($dependency, 0, 4) === '/js/') {
                 $dependency = substr($dependency, 4);
             }
             $dependencies[$n] = $dependency;
@@ -144,7 +144,9 @@ class FrontendBridgeHelper extends Helper
         if (!empty($additionalClasses)) {
             $classes = Hash::merge($classes, $additionalClasses);
         }
-        $classes[] = Inflector::underscore($this->_View->request->controller) . '-' . Inflector::underscore($this->_View->request->action);
+        $derivedClass = Inflector::underscore($this->_View->getRequest()->getParam('controller'));
+        $derivedClass .= '-' . Inflector::underscore($this->_View->getRequest()->getParam('action'));
+        $classes[] = $derivedClass;
 
         return h(implode(' ', $classes));
     }
@@ -291,7 +293,7 @@ class FrontendBridgeHelper extends Helper
         // Move all controllers with base_ prefix to the top, so other controllers
         // can inherit from them
         foreach ($controllers as $n => $file) {
-            if (substr(basename($file), 0, 5) == 'base_') {
+            if (substr(basename($file), 0, 5) === 'base_') {
                 unset($controllers[$n]);
                 array_unshift($controllers, $file);
             }
@@ -345,7 +347,7 @@ class FrontendBridgeHelper extends Helper
         $paths = array();
         $path = 'app/controllers/';
 
-        if ($controller && $action == '*') {
+        if ($controller && $action === '*') {
             // add the base controller
             $this->addController($controller);
 
@@ -369,7 +371,9 @@ class FrontendBridgeHelper extends Helper
                 }
             }
             return true;
-        } elseif ($controller && $action) {
+        }
+
+        if ($controller && $action) {
             // app/controllers/posts/edit_controller.js
             $paths[] = $path . Inflector::underscore($controller) . '/' . Inflector::underscore($action) . '_controller';
             // app/controllers/posts_edit_controller.js

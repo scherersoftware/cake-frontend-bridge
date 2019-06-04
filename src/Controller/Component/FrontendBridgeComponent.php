@@ -14,7 +14,7 @@ class FrontendBridgeComponent extends Component
     /**
      * Holds a reference to the controller which uses this component
      *
-     * @var Controller
+     * @var \Cake\Controller\Controller
      */
     protected $_controller;
 
@@ -35,7 +35,7 @@ class FrontendBridgeComponent extends Component
     /**
      * the current request object
      *
-     * @var CakeRequest
+     * @var \Cake\Http\ServerRequest
      */
     protected $_request;
 
@@ -64,7 +64,7 @@ class FrontendBridgeComponent extends Component
         parent::__construct($registry, $config);
 
         $this->_controller = $registry->getController();
-        $this->_request = $this->_controller->request;
+        $this->_request = $this->_controller->getRequest();
     }
 
     /**
@@ -153,30 +153,30 @@ class FrontendBridgeComponent extends Component
      */
     public function beforeRender(Event $event): void
     {
-        $this->setJson('isAjax', $this->_controller->request->is('ajax'));
-        $this->setJson('isMobile', $this->_controller->request->is('mobile'));
-        $this->setBoth('isDialog', $this->_controller->request->is('dialog'));
-        $this->setBoth('isJson', $this->_controller->request->is('json'));
+        $this->setJson('isAjax', $this->_request->is('ajax'));
+        $this->setJson('isMobile', $this->_request->is('mobile'));
+        $this->setBoth('isDialog', $this->_request->is('dialog'));
+        $this->setBoth('isJson', $this->_request->is('json'));
         $this->setJson('debug', Configure::read('debug'));
 
         $ssl = false;
-        if (env('HTTPS') || $this->_controller->request->is('ssl') || $this->_controller->request->env('HTTP_X_FORWARDED_PROTO') == 'https') {
+        if (env('HTTPS') || $this->_request->is('ssl') || $this->_request->getEnv('HTTP_X_FORWARDED_PROTO') === 'https') {
             $ssl = true;
         }
 
         $appData = array(
             'jsonData' => $this->_jsonData,
-            'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
-            'url' => $this->_controller->request->url,
+            'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_request->getAttribute('webroot'),
+            'url' => $this->_request->getPath(),
             // 'controller' => $this->_controller->name,
-            // 'action' => $this->_controller->request->action,
-            // 'plugin' => $this->_controller->request->plugin,
+            // 'action' => $this->_request->action,
+            // 'plugin' => $this->_request->plugin,
             'request' => array(
-                'query' => $this->_controller->request->query,
-                'pass' => $this->_controller->request->params['pass'],
-                'plugin' => $this->_controller->request->plugin,
-                'controller' => Inflector::underscore($this->_controller->name),
-                'action' => $this->_controller->request->action
+                'query' => $this->_request->getQueryParams(),
+                'pass' => $this->_request->getParam('pass'),
+                'plugin' => $this->_request->getParam('plugin'),
+                'controller' => Inflector::underscore($this->_controller->getName()),
+                'action' => $this->_request->getParam('action')
             )
         );
 

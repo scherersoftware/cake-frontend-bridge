@@ -1,4 +1,7 @@
 <?php
+
+use Cake\Utility\Inflector;
+
 $jsControllerFilename = Inflector::underscore($this->name . ucfirst($this->action) . 'Controller') . '.js';
 if(file_exists(JS . 'controllers' . DS. $jsControllerFilename)) {
 	echo $this->Html->script('controllers/' . $jsControllerFilename);

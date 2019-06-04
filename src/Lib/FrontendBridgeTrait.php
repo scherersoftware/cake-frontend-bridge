@@ -15,14 +15,14 @@ trait FrontendBridgeTrait
     protected function jsonActionResponse(Response $response): ServiceResponse
     {
         // get the frontendData set by the Frontend plugin and remove unnecessary data
-        $frontendData = $this->viewVars['frontendData'];
+        $frontendData = $this->viewBuilder()->getVar('frontendData');
         unset($frontendData['Types']);
         $response = [
             'code' => 'success',
             'data' => [
                 'frontendData' => $frontendData,
                 'html' => $response->body(),
-                'closeDialog' => $this->viewVars['closeDialog']
+                'closeDialog' => $this->viewBuilder()->getVar('closeDialog'),
             ]
         ];
 
@@ -64,14 +64,14 @@ trait FrontendBridgeTrait
             $layout = 'FrontendBridge.json_action';
 
             if ($frontendBridgeComponentExists) {
-                $layout = $this->FrontendBridge->config('templatePaths.jsonAction');
+                $layout = $this->FrontendBridge->getConfig('templatePaths.jsonAction');
             }
 
-            if ($this->request->is('dialog')) {
+            if ($this->getRequest()->is('dialog')) {
                 $layout = 'FrontendBridge.dialog_action';
 
                 if ($frontendBridgeComponentExists) {
-                    $layout = $this->FrontendBridge->config('templatePaths.dialogAction');
+                    $layout = $this->FrontendBridge->getConfig('templatePaths.dialogAction');
                 }
             }
         }
@@ -93,11 +93,11 @@ trait FrontendBridgeTrait
         $response = [
             'code' => 'success',
             'data' => [
-                'inDialog' => $this->request->is('dialog') && !$this->FrontendBridge->_closeDialog,
+                'inDialog' => $this->getRequest()->is('dialog') && !$this->FrontendBridge->_closeDialog,
                 'redirect' => $url
             ]
         ];
-        $this->$response = new ServiceResponse($response);
+        $this->response = new ServiceResponse($response);
 
         return $this->response;
     }

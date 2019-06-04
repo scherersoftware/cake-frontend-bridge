@@ -1,8 +1,11 @@
 <?php
-Cake\Network\Request::addDetector('dialog', function($request) {
-    return $request->query('dialog_action') === '1' || $request->param('dialogAction') === true;
+
+use Cake\Network\Request;
+
+Request::addDetector('dialog', function(Request $request) {
+    return $request->getQuery('dialog_action') === '1' || $request->getParam('dialogAction') === true;
 });
 
-Cake\Network\Request::addDetector('jsonAction', function($request) {
-    return $request->query('json_action') === '1' || $request->param('jsonAction') === true;
+Request::addDetector('jsonAction', function(Request $request) {
+    return $request->getQuery('json_action') === '1' || $request->getParam('jsonAction') === true;
 });
