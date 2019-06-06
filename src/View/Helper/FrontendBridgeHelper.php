@@ -1,8 +1,6 @@
 <?php
 namespace FrontendBridge\View\Helper;
 
-use Cake\Core\App;
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
 use Cake\Utility\Hash;
@@ -17,7 +15,7 @@ class FrontendBridgeHelper extends Helper
     /**
      * The helpers we need
      */
-    public $helpers = array('Html');
+    public $helpers = ['Html'];
 
     /**
      * Holds the needed JS dependencies.
