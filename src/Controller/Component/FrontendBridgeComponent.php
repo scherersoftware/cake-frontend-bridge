@@ -45,19 +45,18 @@ class FrontendBridgeComponent extends Component
      * @var bool
      */
     protected $_closeDialog = false;
-
     protected $_defaultConfig = [
         'templatePaths' => [
             'jsonAction' => 'FrontendBridge.json_action',
-            'dialogAction'=> 'FrontendBridge.dialog_action'
-        ]
+            'dialogAction' => 'FrontendBridge.dialog_action',
+        ],
     ];
 
     /**
      * Constructor
      *
      * @param ComponentRegistry $registry A ComponentRegistry object.
-     * @param array $config Array of configuration settings.
+     * @param array             $config   Array of configuration settings.
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
@@ -75,15 +74,15 @@ class FrontendBridgeComponent extends Component
     public function implementedEvents(): array
     {
         return [
-            'Controller.beforeRender' => 'beforeRender'
+            'Controller.beforeRender' => 'beforeRender',
         ];
     }
 
     /**
      * Pass data to the frontend controller
      *
-     * @param string|array $key string key or array of key=>values
-     * @param mixed $value value
+     * @param string|array $key   string key or array of key=>values
+     * @param mixed        $value value
      * @return void
      */
     public function setJson($key, $value = null): void
@@ -92,6 +91,7 @@ class FrontendBridgeComponent extends Component
             foreach ($key as $k => $v) {
                 $this->setJson($k, $v);
             }
+
             return;
         }
 
@@ -101,8 +101,8 @@ class FrontendBridgeComponent extends Component
     /**
      * Pass data to the frontend controller
      *
-     * @param string|array $key string key or array of key=>values
-     * @param mixed $value value
+     * @param string|array $key   string key or array of key=>values
+     * @param mixed        $value value
      * @return void
      */
     public function set($key, $value = null): void
@@ -113,8 +113,8 @@ class FrontendBridgeComponent extends Component
     /**
      * Adds additional data to the appData
      *
-     * @param string $key string key
-     * @param mixed $value value
+     * @param string $key   string key
+     * @param mixed  $value value
      * @return void
      */
     public function addAppData(string $key, $value = null): void
@@ -125,13 +125,13 @@ class FrontendBridgeComponent extends Component
     /**
      * Set a variable to both the frontend controller and the backend view
      *
-     * @param string|array $key string key or array of key=>value
-     * @param mixed $value var value
+     * @param string|array $key   string key or array of key=>value
+     * @param mixed        $value var value
      * @return void
      */
     public function setBoth($key, $value = null): void
     {
-        $this->_controller->set($key, $value);
+        $this->_controller->viewBuilder()->setVar($key, $value);
         $this->setJson($key, $value);
     }
 
@@ -164,25 +164,25 @@ class FrontendBridgeComponent extends Component
             $ssl = true;
         }
 
-        $appData = array(
+        $appData = [
             'jsonData' => $this->_jsonData,
             'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_request->getAttribute('webroot'),
             'url' => $this->_request->getPath(),
             // 'controller' => $this->_controller->name,
             // 'action' => $this->_request->action,
             // 'plugin' => $this->_request->plugin,
-            'request' => array(
+            'request' => [
                 'query' => $this->_request->getQueryParams(),
                 'pass' => $this->_request->getParam('pass'),
                 'plugin' => $this->_request->getParam('plugin'),
                 'controller' => Inflector::underscore($this->_controller->getName()),
-                'action' => $this->_request->getParam('action')
-            )
-        );
+                'action' => $this->_request->getParam('action'),
+            ],
+        ];
 
         // merge in the additional frontend data
         $appData = Hash::merge($appData, $this->_additionalAppData);
-        $this->_controller->set('frontendData', $appData);
-        $this->_controller->set('closeDialog', $this->_closeDialog);
+        $this->_controller->viewBuilder()->setVar('frontendData', $appData);
+        $this->_controller->viewBuilder()->setVar('closeDialog', $this->_closeDialog);
     }
 }
