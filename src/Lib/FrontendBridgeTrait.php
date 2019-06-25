@@ -21,7 +21,7 @@ trait FrontendBridgeTrait
             'code' => 'success',
             'data' => [
                 'frontendData' => $frontendData,
-                'html' => $response->getBody(),
+                'html' => (string)$response->getBody(),
                 'closeDialog' => $this->viewBuilder()->getVar('closeDialog'),
             ]
         ];
