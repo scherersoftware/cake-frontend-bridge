@@ -131,7 +131,12 @@ class FrontendBridgeComponent extends Component
      */
     public function setBoth($key, $value = null): void
     {
-        $this->_controller->viewBuilder()->setVar($key, $value);
+        if (\is_array($key)) {
+            $this->_controller->viewBuilder()->setVars($key);
+        } else {
+            $this->_controller->viewBuilder()->setVar($key, $value);
+        }
+
         $this->setJson($key, $value);
     }
 
