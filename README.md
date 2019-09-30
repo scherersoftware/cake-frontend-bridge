@@ -88,6 +88,15 @@ Overwrite the `render()` method to properly render JsonAction responses.
     }
 ```
 
+**csrf protection**
+If your application uses csrf protection and you are using a different CSRF-Cookie field name than `_csrfToken` you need to configure it.
+
+Inside the `initialize()` method write:
+
+```
+$this->components['FrontendBridge.FrontendBridge']['csrfCookieFieldName'] = <YOUR_COOKIE_FIELD_NAME>;
+```
+
 #### 6. Load the scripts
 
 Inside your ```<head>``` section add the following code to load all needed .js controllers:

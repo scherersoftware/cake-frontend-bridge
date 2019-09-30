@@ -282,6 +282,14 @@ Frontend.App = Class.extend({
             $.extend(ajaxData, {processData: false, contentType: false});
         }
 
+        if (this.appData['request']['csrf']) {
+            $.extend(ajaxData, {
+                headers: {
+                    'X-CSRF-Token': this.appData['request']['csrf'],
+                },
+            });
+        }
+
         $.ajax(ajaxData);
     },
     /**

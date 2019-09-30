@@ -50,6 +50,7 @@ class FrontendBridgeComponent extends Component
             'jsonAction' => 'FrontendBridge.json_action',
             'dialogAction' => 'FrontendBridge.dialog_action',
         ],
+        'csrfCookieFieldName' => '_csrfToken',
     ];
 
     /**
@@ -182,6 +183,7 @@ class FrontendBridgeComponent extends Component
                 'plugin' => $this->_request->getParam('plugin'),
                 'controller' => Inflector::underscore($this->_controller->getName()),
                 'action' => $this->_request->getParam('action'),
+                'csrf' => $this->_request->getParam($this->getConfig('csrfCookieFieldName'), ''),
             ],
         ];
 
