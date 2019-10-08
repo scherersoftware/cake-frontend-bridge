@@ -184,6 +184,7 @@ class FrontendBridgeComponent extends Component
                 'controller' => Inflector::underscore($this->_controller->getName()),
                 'action' => $this->_request->getParam('action'),
                 'csrf' => $this->_request->getParam($this->getConfig('csrfCookieFieldName'), ''),
+                'csrfCookieFieldName' => $this->getConfig('csrfCookieFieldName'),
             ],
         ];
 
