@@ -33,11 +33,11 @@ trait FrontendBridgeTrait
     /**
      * renderJsonAction
      *
-     * @param string $view   the view to render
+     * @param string $view the view to render
      * @param string $layout the layout to render
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    public function renderJsonAction(string $view, string $layout): ServiceResponse
+    public function renderJsonAction(?string $view, ?string $layout): ServiceResponse
     {
         $layout = $this->getLayout($layout);
         if ($this->RequestHandler) {
