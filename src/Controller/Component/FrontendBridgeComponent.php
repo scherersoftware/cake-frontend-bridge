@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Controller\Component;
 
 use Cake\Controller\Component;
@@ -23,14 +24,14 @@ class FrontendBridgeComponent extends Component
      *
      * @var array
      */
-    protected $_jsonData = array();
+    protected $_jsonData = [];
 
     /**
      * Holds additional data to be set into frontend data by the controller.
      *
      * @var array
      */
-    protected $_additionalAppData = array();
+    protected $_additionalAppData = [];
 
     /**
      * the current request object
@@ -45,6 +46,12 @@ class FrontendBridgeComponent extends Component
      * @var bool
      */
     protected $_closeDialog = false;
+
+    /**
+     * Default config
+     *
+     * @var array
+     */
     protected $_defaultConfig = [
         'templatePaths' => [
             'jsonAction' => 'FrontendBridge.json_action',
@@ -56,7 +63,7 @@ class FrontendBridgeComponent extends Component
     /**
      * Constructor
      *
-     * @param ComponentRegistry $registry A ComponentRegistry object.
+     * @param \Cake\Controller\ComponentRegistry $registry A ComponentRegistry object.
      * @param array             $config   Array of configuration settings.
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
@@ -154,7 +161,7 @@ class FrontendBridgeComponent extends Component
     /**
      * Should be called explicitely in Controller::beforeRender()
      *
-     * @param Event $event beforeRender event
+     * @param \Cake\Event\Event $event beforeRender event
      * @return void
      */
     public function beforeRender(Event $event): void

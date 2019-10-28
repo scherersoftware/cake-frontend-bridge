@@ -1,7 +1,8 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Lib;
 
-use Cake\Network\Response;
+use Cake\Http\Response;
 use FrontendBridge\Lib\ServiceResponse;
 
 trait FrontendBridgeTrait
@@ -23,7 +24,7 @@ trait FrontendBridgeTrait
                 'frontendData' => $frontendData,
                 'html' => (string)$response->getBody(),
                 'closeDialog' => $this->viewBuilder()->getVar('closeDialog'),
-            ]
+            ],
         ];
 
         return new ServiceResponse($response);
@@ -36,7 +37,7 @@ trait FrontendBridgeTrait
      * @param string $layout the layout to render
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    public function renderJsonAction($view, $layout): ServiceResponse
+    public function renderJsonAction(string $view, string $layout): ServiceResponse
     {
         $layout = $this->getLayout($layout);
         if ($this->RequestHandler) {
@@ -94,8 +95,8 @@ trait FrontendBridgeTrait
             'code' => 'success',
             'data' => [
                 'inDialog' => $this->getRequest()->is('dialog') && !$this->FrontendBridge->_closeDialog,
-                'redirect' => $url
-            ]
+                'redirect' => $url,
+            ],
         ];
         $this->response = new ServiceResponse($response);
 

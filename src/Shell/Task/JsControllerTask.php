@@ -1,28 +1,42 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Shell\Task;
 
 use Bake\Shell\Task\BakeTask;
 use Cake\Console\Shell;
 use Cake\Utility\Inflector;
 
+/**
+ * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
+ */
 class JsControllerTask extends BakeTask
 {
 
+    /**
+     * JS controllers path
+     *
+     * @var string
+     */
     public $pathFragment = '../webroot/js/app/controllers/';
 
+    /**
+     * Bake tasks
+     *
+     * @var array
+     */
     public $tasks = [
-        'Bake.BakeTemplate'
+        'Bake.BakeTemplate',
     ];
 
     /**
      * Main Action
      *
-     * @return void
+     * @return mixed
      */
     public function main()
     {
         if (count($this->args) < 2) {
-            return $this->error('Please pass the controller and action name.');
+            return $this->abort('Please pass the controller and action name.');
         }
         $controllerName = Inflector::camelize($this->args[0]);
         $actionName = Inflector::camelize($this->args[1]);
@@ -43,18 +57,21 @@ class JsControllerTask extends BakeTask
      * @param string $content File Content
      * @return string
      */
-    public function bake($controllerName, $actionName, $content = '')
+    public function bake(string $controllerName, string $actionName, string $content = ''): string
     {
         if ($content === true) {
             $content = $this->getContent($action);
         }
+
         if (empty($content)) {
             return false;
         }
+
         $this->out("\n" . sprintf('Baking `%s%s/%s` JS controller file...', ($this->plugin ? $this->plugin . '.' : ''), $controllerName, $actionName), 1, Shell::QUIET);
         $path = $this->getPath();
         $filename = $path . Inflector::underscore($controllerName) . '/' . Inflector::underscore($actionName) . '_controller.js';
         $this->createFile($filename, $content);
+
         return $content;
     }
 
@@ -63,19 +80,20 @@ class JsControllerTask extends BakeTask
      *
      * @return \Cake\Console\ConsoleOptionParser
      */
-    public function getOptionParser()
+    public function getOptionParser(): \Cake\Console\ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 
-        $parser->description(
+        $parser->setDescription(
             'Bake a JS Controller for use in FrontendBridge '
         )->addArgument('controller', [
             'help' => 'Controller Name, e.g. Posts',
-            'required' => true
+            'required' => true,
         ])->addArgument('action', [
             'help' => 'Action Name, e.g. addPost',
-            'required' => true
+            'required' => true,
         ]);
+
         return $parser;
     }
 }
