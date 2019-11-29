@@ -11,7 +11,7 @@ use Cake\View\Helper;
 use Cake\View\View;
 
 /**
- * @property \Cake\View\Helper\Htmlhelper $Html
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class FrontendBridgeHelper extends Helper
 {
