@@ -3,7 +3,6 @@ declare(strict_types = 1);
 namespace FrontendBridge\Lib;
 
 use Cake\Http\Response;
-use FrontendBridge\Lib\ServiceResponse;
 
 trait FrontendBridgeTrait
 {

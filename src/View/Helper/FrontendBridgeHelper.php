@@ -176,7 +176,9 @@ class FrontendBridgeHelper extends Helper
      */
     public function getControllerAttributes(array $additionalClasses = null): string
     {
-        return $this->getInstanceIdDataAttribute() . ' class="' . $this->getMainContentClasses($additionalClasses) . '"';
+        $mainContentClasses = $this->getMainContentClasses($additionalClasses);
+
+        return $this->getInstanceIdDataAttribute() . ' class="' . $mainContentClasses . '"';
     }
 
     /**
@@ -277,7 +279,8 @@ class FrontendBridgeHelper extends Helper
         // Add All Plugin Controllers
         foreach (Plugin::loaded() as $pluginName) {
             $pluginPath = Plugin::path($pluginName);
-            $pluginJsControllersFolder = $pluginPath . (substr($pluginPath, -1) === '/' ? '' : '/') . 'webroot/js/app/controllers/';
+            $pluginJsControllersFolder = $pluginPath . (substr($pluginPath, -1) === '/' ? '' : '/')
+                . 'webroot/js/app/controllers/';
             $pluginJsControllersFolder = str_replace('\\', '/', $pluginJsControllersFolder);
 
             if (is_dir($pluginJsControllersFolder)) {
@@ -383,9 +386,11 @@ class FrontendBridgeHelper extends Helper
 
         if ($controller && $action) {
             // app/controllers/posts/edit_controller.js
-            $paths[] = $path . Inflector::underscore($controller) . '/' . Inflector::underscore($action) . '_controller';
+            $paths[] = $path . Inflector::underscore($controller) . '/' . Inflector::underscore($action)
+                . '_controller';
             // app/controllers/posts_edit_controller.js
-            $paths[] = $path . Inflector::underscore($controller) . '_' . Inflector::underscore($action) . '_controller';
+            $paths[] = $path . Inflector::underscore($controller) . '_' . Inflector::underscore($action)
+                . '_controller';
         } else {
             // app/controllers/posts/controller.js
             $paths[] = $path . Inflector::underscore($controller) . '/' . 'controller';
@@ -421,7 +426,7 @@ class FrontendBridgeHelper extends Helper
         }
         $componentFile = 'app/components/' . Inflector::underscore($componentName) . '.js';
 
-        if (file_exists(JS . DS . $componentFile)) {
+        if (file_exists(WWW_ROOT . 'js' . DS . $componentFile)) {
             $this->_addDependency($componentFile);
 
             return true;

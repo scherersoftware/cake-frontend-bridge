@@ -173,13 +173,18 @@ class FrontendBridgeComponent extends Component
         $this->setJson('debug', Configure::read('debug'));
 
         $ssl = false;
-        if (env('HTTPS') || $this->_request->is('ssl') || $this->_request->getEnv('HTTP_X_FORWARDED_PROTO') === 'https') {
+        if (
+            env('HTTPS')
+            || $this->_request->is('ssl')
+            || $this->_request->getEnv('HTTP_X_FORWARDED_PROTO') === 'https'
+        ) {
             $ssl = true;
         }
 
+        $webroot = 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_request->getAttribute('webroot');
         $appData = [
             'jsonData' => $this->_jsonData,
-            'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_request->getAttribute('webroot'),
+            'webroot' => $webroot,
             'url' => $this->_request->getPath(),
             // 'controller' => $this->_controller->name,
             // 'action' => $this->_request->action,

@@ -3,11 +3,13 @@ declare(strict_types = 1);
 namespace FrontendBridge\Shell\Task;
 
 use Bake\Shell\Task\BakeTask;
+use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Http\Exception\NotImplementedException;
 use Cake\Utility\Inflector;
 
 /**
- * @property \Bake\Shell\Task\BakeTemplateTask $BakeTemplate
+ * @property \FrontendBridge\Shell\Task\BakeTemplateTask $BakeTemplate
  */
 class JsControllerTask extends BakeTask
 {
@@ -25,7 +27,7 @@ class JsControllerTask extends BakeTask
      * @var array
      */
     public $tasks = [
-        'Bake.BakeTemplate',
+        'BakeTemplate',
     ];
 
     /**
@@ -36,11 +38,11 @@ class JsControllerTask extends BakeTask
     public function main()
     {
         if (count($this->args) < 2) {
-            return $this->abort('Please pass the controller and action name.');
+            $this->abort('Please pass the controller and action name.');
         }
         $controllerName = Inflector::camelize($this->args[0]);
         $actionName = Inflector::camelize($this->args[1]);
-        $this->plugin = isset($this->params['plugin']) ? $this->params['plugin'] : null;
+        $this->plugin = $this->params['plugin'] ?? null;
 
         $this->BakeTemplate->set('controllerName', $controllerName);
         $this->BakeTemplate->set('actionName', $actionName);
@@ -59,17 +61,19 @@ class JsControllerTask extends BakeTask
      */
     public function bake(string $controllerName, string $actionName, string $content = ''): string
     {
-        if ($content === true) {
-            $content = $this->getContent($action);
-        }
-
         if (empty($content)) {
-            return false;
+            throw new NotImplementedException();
         }
 
-        $this->out("\n" . sprintf('Baking `%s%s/%s` JS controller file...', ($this->plugin ? $this->plugin . '.' : ''), $controllerName, $actionName), 1, Shell::QUIET);
+        $this->out("\n" . sprintf(
+            'Baking `%s%s/%s` JS controller file...',
+            ($this->plugin ? $this->plugin . '.' : ''),
+            $controllerName,
+            $actionName
+        ), 1, Shell::QUIET);
         $path = $this->getPath();
-        $filename = $path . Inflector::underscore($controllerName) . '/' . Inflector::underscore($actionName) . '_controller.js';
+        $filename = $path . Inflector::underscore($controllerName) . '/' . Inflector::underscore($actionName)
+            . '_controller.js';
         $this->createFile($filename, $content);
 
         return $content;
@@ -80,7 +84,7 @@ class JsControllerTask extends BakeTask
      *
      * @return \Cake\Console\ConsoleOptionParser
      */
-    public function getOptionParser(): \Cake\Console\ConsoleOptionParser
+    public function getOptionParser(): ConsoleOptionParser
     {
         $parser = parent::getOptionParser();
 
