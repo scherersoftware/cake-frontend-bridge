@@ -230,9 +230,9 @@ class FrontendBridgeHelper extends Helper
     /**
      * Returns a script block containing namespace definitions for plugin controllers.
      *
-     * @return string
+     * @return string|null
      */
-    public function getNamespaceDefinitions(): string
+    public function getNamespaceDefinitions(): ?string
     {
         $script = 'var Frontend = {};';
         $script .= 'var App = { Controllers: {}, Components: {}, Lib: {} };';
@@ -457,9 +457,9 @@ class FrontendBridgeHelper extends Helper
     /**
      * Constructs the JS for setting the appData
      *
-     * @return string The rendered JS
+     * @return string|null The rendered JS
      */
-    public function getAppDataJs(): string
+    public function getAppDataJs(): ?string
     {
         return $this->Html->scriptBlock('
             var appData = ' . json_encode($this->_frontendData) . ';

@@ -1,7 +1,7 @@
-![CakePHP 3 Notifications Plugin](https://raw.githubusercontent.com/scherersoftware/cake-frontend-bridge/master/cake-frontend-bridge.png)
+![CakePHP 4 Frontend Bridge Plugin](https://raw.githubusercontent.com/scherersoftware/cake-frontend-bridge/master/cake-frontend-bridge.png)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.txt)
 
-A CakePHP 3.8 plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
+A CakePHP 4 plugin that allows the creation of JavaScript Controllers for Controller-actions. Code-generation via the shell is possible as well.
 
 ## Dependencies
 

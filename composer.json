@@ -10,7 +10,6 @@
     },
     "require-dev": {
         "phpstan/phpstan": "^0.11",
-        "cakephp/cakephp-codesniffer": "^4.0.0-beta4",
         "scherersoftware/coding-standard": "4.0.x-dev"
     },
     "autoload": {
@@ -23,8 +22,8 @@
             "@php-check",
             "@phpstan"
         ],
-        "php-check": "vendor/bin/phpcs -p --standard=vendor/scherersoftware/coding-standard/scherersoftware ./src",
-        "phpstan": "php -d memory_limit=-1 vendor/bin/phpstan analyse -c phpstan.neon -l 3 ./src"
+        "php-check": "vendor/bin/phpcs -p --colors --standard=vendor/scherersoftware/coding-standard/scherersoftware ./src",
+        "phpstan": "php -d memory_limit=-1 vendor/bin/phpstan analyse -c phpstan.neon -l 5 ./src"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
