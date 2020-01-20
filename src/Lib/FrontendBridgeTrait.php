@@ -39,12 +39,14 @@ trait FrontendBridgeTrait
     public function renderJsonAction(?string $view, ?string $layout): ServiceResponse
     {
         $layout = $this->getLayout($layout);
-        if ($this->RequestHandler) {
+
+        if ($this->FrontendBridgeRequestHandler) {
             // Make sure the view is rendered as HTML, even if it is an AJAX request
             // jsonActionResponse() will make sure the JSON response is rendered correctly
-            $this->RequestHandler->renderAs($this, 'ajax');
-            $this->RequestHandler->ext = 'html';
+            $this->FrontendBridgeRequestHandler->renderAs($this, 'ajax');
+            $this->FrontendBridgeRequestHandler->setExt('html');
         }
+
         $response = parent::render($view, $layout);
         $this->response = $this->jsonActionResponse($response);
 
