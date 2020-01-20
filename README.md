@@ -57,6 +57,7 @@ use \FrontendBridge\Lib\FrontendBridgeTrait;
 
 ```
 'FrontendBridge.FrontendBridge',
+'FrontendBridge.FrontendBridgeRequestHandler',
 ```
 
 **render method**
