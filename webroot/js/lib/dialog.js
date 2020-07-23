@@ -35,7 +35,8 @@ Frontend.Dialog = Class.extend({
         replaceTarget: false,
         preventHistory: false,
         onLoadComplete: false,
-        onDialogClose: false
+        onDialogClose: false,
+        alwaysUseBackstack: false,
     },
 
     /**
@@ -147,6 +148,18 @@ Frontend.Dialog = Class.extend({
      * @protected
      */
     close: function () {
+        if (this._config.alwaysUseBackstack) {
+            if (this._history.entries.length <= 0) {
+                this._modal.modal('hide');
+
+                return;
+            }
+
+            this._applyBackstack();
+
+            return;
+        }
+
         this._modal.modal('hide');
     },
 
@@ -293,21 +306,7 @@ Frontend.Dialog = Class.extend({
         }
 
         $('.modal-back', this._modal).off('click').on('click', function (e) {
-            if (this._history.entries.length <= 0) {
-                return;
-            }
-
-            this._cleanupModal();
-
-            App.Main.UIBlocker.blockElement($(this._getBlockElement()));
-            var historyEntry = this._history.entries.pop();
-            this.loadDialog(historyEntry.url, {
-                preventHistory: true,
-                modalTitle: historyEntry.title,
-                selectTab: historyEntry.selectedTab,
-                additionalClasses: historyEntry.additionalClasses
-            });
-            App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
+            this._applyBackstack();
         }.bind(this));
 
         $('.nav-tabs.historized a[data-toggle="tab"]', this._modal).on('shown.bs.tab', function (e) {
@@ -316,6 +315,33 @@ Frontend.Dialog = Class.extend({
                 this._history.upcoming.selectedTab = '.' + $(e.target).attr('class');
             }
         }.bind(this))
+    },
+
+    /** 
+     * Closes current modal dialog and opens previous opened modal dialog if available.
+     *
+     * @return  void
+     */
+    _applyBackstack: function() {
+        if (this._history.entries.length <= 0) {
+            return;
+        }
+
+        this._cleanupModal();
+
+        if (typeof this._config.onDialogClose === 'function') {
+            this._config.onDialogClose(this);
+        }
+
+        App.Main.UIBlocker.blockElement($(this._getBlockElement()));
+        var historyEntry = this._history.entries.pop();
+        this.loadDialog(historyEntry.url, {
+            preventHistory: true,
+            modalTitle: historyEntry.title,
+            selectTab: historyEntry.selectedTab,
+            additionalClasses: historyEntry.additionalClasses
+        });
+        App.Main.UIBlocker.unblockElement($(this._getBlockElement()));
     },
 
     /**
