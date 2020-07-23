@@ -1,13 +1,14 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Lib;
 
-use Cake\Network\Response;
+use Cake\Http\Response;
 use FrontendBridge\Lib\ServiceResponse;
 
 trait FrontendBridgeTrait
 {
     /**
-     * jsonActionResponse
+     * jsonActionResponsewithType
      *
      * @param \Cake\Network\Response $response the response
      * @return \FrontendBridge\Lib\ServiceResponse
@@ -15,15 +16,15 @@ trait FrontendBridgeTrait
     protected function jsonActionResponse(Response $response): ServiceResponse
     {
         // get the frontendData set by the Frontend plugin and remove unnecessary data
-        $frontendData = $this->viewVars['frontendData'];
+        $frontendData = $this->viewBuilder()->getVar('frontendData');
         unset($frontendData['Types']);
         $response = [
             'code' => 'success',
             'data' => [
                 'frontendData' => $frontendData,
-                'html' => $response->body(),
-                'closeDialog' => $this->viewVars['closeDialog']
-            ]
+                'html' => (string)$response->getBody(),
+                'closeDialog' => $this->viewBuilder()->getVar('closeDialog'),
+            ],
         ];
 
         return new ServiceResponse($response);
@@ -32,11 +33,11 @@ trait FrontendBridgeTrait
     /**
      * renderJsonAction
      *
-     * @param string $view   the view to render
+     * @param string $view the view to render
      * @param string $layout the layout to render
      * @return \FrontendBridge\Lib\ServiceResponse
      */
-    public function renderJsonAction($view, $layout): ServiceResponse
+    public function renderJsonAction(?string $view, ?string $layout): ServiceResponse
     {
         $layout = $this->getLayout($layout);
         if ($this->RequestHandler) {
@@ -46,8 +47,9 @@ trait FrontendBridgeTrait
             $this->RequestHandler->ext = 'html';
         }
         $response = parent::render($view, $layout);
+        $this->response = $this->jsonActionResponse($response);
 
-        return $this->jsonActionResponse($response);
+        return $this->response;
     }
 
     /**
@@ -63,14 +65,14 @@ trait FrontendBridgeTrait
             $layout = 'FrontendBridge.json_action';
 
             if ($frontendBridgeComponentExists) {
-                $layout = $this->FrontendBridge->config('templatePaths.jsonAction');
+                $layout = $this->FrontendBridge->getConfig('templatePaths.jsonAction');
             }
 
-            if ($this->request->is('dialog')) {
+            if ($this->getRequest()->is('dialog')) {
                 $layout = 'FrontendBridge.dialog_action';
 
                 if ($frontendBridgeComponentExists) {
-                    $layout = $this->FrontendBridge->config('templatePaths.dialogAction');
+                    $layout = $this->FrontendBridge->getConfig('templatePaths.dialogAction');
                 }
             }
         }
@@ -92,11 +94,13 @@ trait FrontendBridgeTrait
         $response = [
             'code' => 'success',
             'data' => [
-                'inDialog' => $this->request->is('dialog') && !$this->FrontendBridge->_closeDialog,
-                'redirect' => $url
-            ]
+                'inDialog' => $this->getRequest()->is('dialog') && !$this->FrontendBridge->_closeDialog,
+                'redirect' => $url,
+            ],
         ];
-        return new ServiceResponse($response);
+        $this->response = new ServiceResponse($response);
+
+        return $this->response;
     }
 
     /**

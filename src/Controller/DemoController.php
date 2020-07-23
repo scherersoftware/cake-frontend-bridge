@@ -1,24 +1,40 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Controller;
 
-class DemoController extends AppController
-{
-
-	public $components = [
-		'FrontendBridge.FrontendBridge'
-	];
-
-	public $helpers = [
-		'FrontendBridge.FrontendBridge'
-	];
+use Cake\Controller\Controller;
 
 /**
- * Demo page
- *
- * @return void
+ * @property \FrontendBridge\Controller\Component\FrontendBridgeComponent $FrontendBridge
  */
-	public function index()
-	{
-		$this->FrontendBridge->setJson('foobar', 'foo');
-	}
+class DemoController extends Controller
+{
+
+    /**
+     * An array containing the names of components this controller uses
+     *
+     * @var array
+     */
+    public $components = [
+        'FrontendBridge.FrontendBridge',
+    ];
+
+    /**
+     * An array containing the names of helpers this controller uses
+     *
+     * @var array
+     */
+    public $helpers = [
+        'FrontendBridge.FrontendBridge',
+    ];
+
+    /**
+     * Demo page
+     *
+     * @return void
+     */
+    public function index(): void
+    {
+        $this->FrontendBridge->setJson('foobar', 'foo');
+    }
 }

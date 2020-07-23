@@ -1,8 +1,8 @@
 <?php
-
+declare(strict_types = 1);
 namespace FrontendBridge\Lib;
 
-use Cake\Network\Response;
+use Cake\Http\Response;
 use Cake\Utility\Hash;
 
 /**
@@ -17,25 +17,25 @@ class ServiceResponse extends Response
      * Constructor
      *
      * @param string|array $code One of Types::CODE_*, or an array containing 'code' and 'data' keys
-     * @param array        $data data to return
+     * @param array $data data to return
      */
-    public function __construct($code, array $data = array ())
+    public function __construct($code, array $data = [])
     {
         if (is_array($code)) {
-            $body = Hash::merge(array (
+            $body = Hash::merge([
                 'code' => 'success',
-                'data' => array ()
-            ), $code);
+                'data' => [],
+            ], $code);
         } else {
-            $body = array (
+            $body = [
                 'code' => $code,
-                'data' => $data
-            );
+                'data' => $data,
+            ];
         }
-        $options = array (
+        $options = [
             'type' => 'json',
-            'body' => json_encode($body)
-        );
+            'body' => json_encode($body),
+        ];
 
         parent::__construct($options);
     }

@@ -1,8 +1,7 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\View\Helper;
 
-use Cake\Core\App;
-use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
 use Cake\Utility\Hash;
@@ -11,20 +10,27 @@ use Cake\Utility\Text;
 use Cake\View\Helper;
 use Cake\View\View;
 
+/**
+ * @property \Cake\View\Helper\Htmlhelper $Html
+ */
 class FrontendBridgeHelper extends Helper
 {
 
     /**
-     * The helpers we need
+     * An array containing the names of helpers this helper uses
+     *
+     * @var array
      */
-    public $helpers = array('Html');
+    public $helpers = [
+        'Html',
+    ];
 
     /**
      * Holds the needed JS dependencies.
      *
      * @var array
      */
-    protected $_dependencies = array(
+    protected $_dependencies = [
         '/frontend_bridge/js/lib/basics.js',
         '/frontend_bridge/js/lib/jinheritance.js',
         '/frontend_bridge/js/lib/publish_subscribe_broker.js',
@@ -34,17 +40,17 @@ class FrontendBridgeHelper extends Helper
         '/frontend_bridge/js/lib/dialog.js',
         '/frontend_bridge/js/lib/router.js',
         '/frontend_bridge/js/lib/ui_blocker.js',
-        '/frontend_bridge/js/vendor/jquery.blockUI.js'
-    );
+        '/frontend_bridge/js/vendor/jquery.blockUI.js',
+    ];
 
     /**
      * Holds the frontendData array created by the Component
      *
      * @var array
      */
-    protected $_frontendData = array(
-        'jsonData' => array()
-    );
+    protected $_frontendData = [
+        'jsonData' => [],
+    ];
 
     /**
      * Array of plugin names of the plugin js controllers which are loaded.
@@ -69,7 +75,8 @@ class FrontendBridgeHelper extends Helper
     public function init(array $frontendData): void
     {
         $this->_frontendData = Hash::merge(
-            $this->_frontendData, $frontendData
+            $this->_frontendData,
+            $frontendData
         );
         $this->_includeAppController();
         $this->_includeComponents();
@@ -97,7 +104,7 @@ class FrontendBridgeHelper extends Helper
                     $dependency
                 );
             }
-            if (substr($dependency, 0, 4) == '/js/') {
+            if (substr($dependency, 0, 4) === '/js/') {
                 $dependency = substr($dependency, 4);
             }
             $dependencies[$n] = $dependency;
@@ -117,7 +124,7 @@ class FrontendBridgeHelper extends Helper
     public function subControllerElement(array $url, array $data = [], array $options = []): string
     {
         $options = Hash::merge([
-            'htmlElement' => 'div'
+            'htmlElement' => 'div',
         ], $options);
 
         $name = '../' . $url['controller'] . '/' . Inflector::underscore($url['action']);
@@ -144,7 +151,9 @@ class FrontendBridgeHelper extends Helper
         if (!empty($additionalClasses)) {
             $classes = Hash::merge($classes, $additionalClasses);
         }
-        $classes[] = Inflector::underscore($this->_View->request->controller) . '-' . Inflector::underscore($this->_View->request->action);
+        $derivedClass = Inflector::underscore($this->_View->getRequest()->getParam('controller'));
+        $derivedClass .= '-' . Inflector::underscore($this->_View->getRequest()->getParam('action'));
+        $classes[] = $derivedClass;
 
         return h(implode(' ', $classes));
     }
@@ -210,7 +219,7 @@ class FrontendBridgeHelper extends Helper
             $jsFile = $this->Html->script($dependency);
             $out .= $jsFile . "\n";
         }
-        $out .= $this->getAppDataJs($this->_frontendData);
+        $out .= $this->getAppDataJs();
         $out .= $this->Html->script('/frontend_bridge/js/bootstrap.js');
 
         return $out;
@@ -291,7 +300,7 @@ class FrontendBridgeHelper extends Helper
         // Move all controllers with base_ prefix to the top, so other controllers
         // can inherit from them
         foreach ($controllers as $n => $file) {
-            if (substr(basename($file), 0, 5) == 'base_') {
+            if (substr(basename($file), 0, 5) === 'base_') {
                 unset($controllers[$n]);
                 array_unshift($controllers, $file);
             }
@@ -342,10 +351,10 @@ class FrontendBridgeHelper extends Helper
             $pluginPrefix = '/' . Inflector::underscore($this->plugin) . '/js/';
         }
 
-        $paths = array();
+        $paths = [];
         $path = 'app/controllers/';
 
-        if ($controller && $action == '*') {
+        if ($controller && $action === '*') {
             // add the base controller
             $this->addController($controller);
 
@@ -368,8 +377,11 @@ class FrontendBridgeHelper extends Helper
                     $this->_addDependency($pluginPrefix . $path . $file);
                 }
             }
+
             return true;
-        } elseif ($controller && $action) {
+        }
+
+        if ($controller && $action) {
             // app/controllers/posts/edit_controller.js
             $paths[] = $path . Inflector::underscore($controller) . '/' . Inflector::underscore($action) . '_controller';
             // app/controllers/posts_edit_controller.js
@@ -418,7 +430,6 @@ class FrontendBridgeHelper extends Helper
         return false;
     }
 
-
     /**
      * Allows manipulating frontend data
      *
@@ -432,6 +443,7 @@ class FrontendBridgeHelper extends Helper
             foreach ($key as $k => $v) {
                 $this->setFrontendData($k, $v);
             }
+
             return;
         }
         $this->_frontendData['jsonData'][$key] = $value;
@@ -454,7 +466,7 @@ class FrontendBridgeHelper extends Helper
      *
      * @return void
      */
-    public function includeModal()
+    public function includeModal(): void
     {
         echo $this->_View->element('FrontendBridge.modal');
     }

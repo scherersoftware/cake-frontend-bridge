@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 namespace FrontendBridge\Controller\Component;
 
 use Cake\Controller\Component;
@@ -14,7 +15,7 @@ class FrontendBridgeComponent extends Component
     /**
      * Holds a reference to the controller which uses this component
      *
-     * @var Controller
+     * @var \Cake\Controller\Controller
      */
     protected $_controller;
 
@@ -23,19 +24,19 @@ class FrontendBridgeComponent extends Component
      *
      * @var array
      */
-    protected $_jsonData = array();
+    protected $_jsonData = [];
 
     /**
      * Holds additional data to be set into frontend data by the controller.
      *
      * @var array
      */
-    protected $_additionalAppData = array();
+    protected $_additionalAppData = [];
 
     /**
      * the current request object
      *
-     * @var CakeRequest
+     * @var \Cake\Http\ServerRequest
      */
     protected $_request;
 
@@ -46,25 +47,31 @@ class FrontendBridgeComponent extends Component
      */
     protected $_closeDialog = false;
 
+    /**
+     * Default config
+     *
+     * @var array
+     */
     protected $_defaultConfig = [
         'templatePaths' => [
             'jsonAction' => 'FrontendBridge.json_action',
-            'dialogAction'=> 'FrontendBridge.dialog_action'
-        ]
+            'dialogAction' => 'FrontendBridge.dialog_action',
+        ],
+        'csrfCookieFieldName' => '_csrfToken',
     ];
 
     /**
      * Constructor
      *
-     * @param ComponentRegistry $registry A ComponentRegistry object.
-     * @param array $config Array of configuration settings.
+     * @param \Cake\Controller\ComponentRegistry $registry A ComponentRegistry object.
+     * @param array             $config   Array of configuration settings.
      */
     public function __construct(ComponentRegistry $registry, array $config = [])
     {
         parent::__construct($registry, $config);
 
         $this->_controller = $registry->getController();
-        $this->_request = $this->_controller->request;
+        $this->_request = $this->_controller->getRequest();
     }
 
     /**
@@ -75,15 +82,15 @@ class FrontendBridgeComponent extends Component
     public function implementedEvents(): array
     {
         return [
-            'Controller.beforeRender' => 'beforeRender'
+            'Controller.beforeRender' => 'beforeRender',
         ];
     }
 
     /**
      * Pass data to the frontend controller
      *
-     * @param string|array $key string key or array of key=>values
-     * @param mixed $value value
+     * @param string|array $key   string key or array of key=>values
+     * @param mixed        $value value
      * @return void
      */
     public function setJson($key, $value = null): void
@@ -92,6 +99,7 @@ class FrontendBridgeComponent extends Component
             foreach ($key as $k => $v) {
                 $this->setJson($k, $v);
             }
+
             return;
         }
 
@@ -101,8 +109,8 @@ class FrontendBridgeComponent extends Component
     /**
      * Pass data to the frontend controller
      *
-     * @param string|array $key string key or array of key=>values
-     * @param mixed $value value
+     * @param string|array $key   string key or array of key=>values
+     * @param mixed        $value value
      * @return void
      */
     public function set($key, $value = null): void
@@ -113,8 +121,8 @@ class FrontendBridgeComponent extends Component
     /**
      * Adds additional data to the appData
      *
-     * @param string $key string key
-     * @param mixed $value value
+     * @param string $key   string key
+     * @param mixed  $value value
      * @return void
      */
     public function addAppData(string $key, $value = null): void
@@ -125,13 +133,18 @@ class FrontendBridgeComponent extends Component
     /**
      * Set a variable to both the frontend controller and the backend view
      *
-     * @param string|array $key string key or array of key=>value
-     * @param mixed $value var value
+     * @param string|array $key   string key or array of key=>value
+     * @param mixed        $value var value
      * @return void
      */
     public function setBoth($key, $value = null): void
     {
-        $this->_controller->set($key, $value);
+        if (\is_array($key)) {
+            $this->_controller->viewBuilder()->setVars($key);
+        } else {
+            $this->_controller->viewBuilder()->setVar($key, $value);
+        }
+
         $this->setJson($key, $value);
     }
 
@@ -148,41 +161,43 @@ class FrontendBridgeComponent extends Component
     /**
      * Should be called explicitely in Controller::beforeRender()
      *
-     * @param Event $event beforeRender event
+     * @param \Cake\Event\Event $event beforeRender event
      * @return void
      */
     public function beforeRender(Event $event): void
     {
-        $this->setJson('isAjax', $this->_controller->request->is('ajax'));
-        $this->setJson('isMobile', $this->_controller->request->is('mobile'));
-        $this->setBoth('isDialog', $this->_controller->request->is('dialog'));
-        $this->setBoth('isJson', $this->_controller->request->is('json'));
+        $this->setJson('isAjax', $this->_request->is('ajax'));
+        $this->setJson('isMobile', $this->_request->is('mobile'));
+        $this->setBoth('isDialog', $this->_request->is('dialog'));
+        $this->setBoth('isJson', $this->_request->is('json'));
         $this->setJson('debug', Configure::read('debug'));
 
         $ssl = false;
-        if (env('HTTPS') || $this->_controller->request->is('ssl') || $this->_controller->request->env('HTTP_X_FORWARDED_PROTO') == 'https') {
+        if (env('HTTPS') || $this->_request->is('ssl') || $this->_request->getEnv('HTTP_X_FORWARDED_PROTO') === 'https') {
             $ssl = true;
         }
 
-        $appData = array(
+        $appData = [
             'jsonData' => $this->_jsonData,
-            'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_controller->request->webroot,
-            'url' => $this->_controller->request->url,
+            'webroot' => 'http' . ($ssl ? 's' : '') . '://' . env('HTTP_HOST') . $this->_request->getAttribute('webroot'),
+            'url' => $this->_request->getPath(),
             // 'controller' => $this->_controller->name,
-            // 'action' => $this->_controller->request->action,
-            // 'plugin' => $this->_controller->request->plugin,
-            'request' => array(
-                'query' => $this->_controller->request->query,
-                'pass' => $this->_controller->request->params['pass'],
-                'plugin' => $this->_controller->request->plugin,
-                'controller' => Inflector::underscore($this->_controller->name),
-                'action' => $this->_controller->request->action
-            )
-        );
+            // 'action' => $this->_request->action,
+            // 'plugin' => $this->_request->plugin,
+            'request' => [
+                'query' => $this->_request->getQueryParams(),
+                'pass' => $this->_request->getParam('pass'),
+                'plugin' => $this->_request->getParam('plugin'),
+                'controller' => Inflector::underscore($this->_controller->getName()),
+                'action' => $this->_request->getParam('action'),
+                'csrf' => $this->_request->getParam($this->getConfig('csrfCookieFieldName'), ''),
+                'csrfCookieFieldName' => $this->getConfig('csrfCookieFieldName'),
+            ],
+        ];
 
         // merge in the additional frontend data
         $appData = Hash::merge($appData, $this->_additionalAppData);
-        $this->_controller->set('frontendData', $appData);
-        $this->_controller->set('closeDialog', $this->_closeDialog);
+        $this->_controller->viewBuilder()->setVar('frontendData', $appData);
+        $this->_controller->viewBuilder()->setVar('closeDialog', $this->_closeDialog);
     }
 }

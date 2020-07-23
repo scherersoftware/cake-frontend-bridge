@@ -5,6 +5,7 @@ Frontend.App = Class.extend({
     PageController: null,
     _errorHandler: null,
     Dialog: null,
+    requestCounter: 0,
     /**
      * Holds an instance of the router class
      *
@@ -227,7 +228,16 @@ Frontend.App = Class.extend({
             dataType: 'json',
             cache: false,
             context: this,
+            beforeSend: function(jqXHR, settings) {
+                if (requestType === 'POST') {
+                    this.requestCounter++;
+                }
+            },
             success: function(response, textStatus, jqXHR) {
+                if (requestType === 'POST') {
+                   this.requestCounter--;
+                }
+
                 if (response == null) {
                     var response = {
                         code: 'error'
@@ -239,6 +249,10 @@ Frontend.App = Class.extend({
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
+                if (requestType === 'POST') {
+                    this.requestCounter--;
+                }
+
                 var responseText = jqXHR.responseText;
                 var response = null;
                 try {
@@ -266,6 +280,14 @@ Frontend.App = Class.extend({
 
         if ((window.FormData !== undefined) && (data instanceof FormData)) {
             $.extend(ajaxData, {processData: false, contentType: false});
+        }
+
+        if (this.appData['request']['csrf']) {
+            $.extend(ajaxData, {
+                headers: {
+                    'X-CSRF-Token': this.appData['request']['csrf'],
+                },
+            });
         }
 
         $.ajax(ajaxData);
